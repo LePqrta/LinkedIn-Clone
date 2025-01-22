@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class AdminService implements UserDetailsService {
 
     private final UserRepo userRepository;
 
@@ -25,7 +25,7 @@ public class UserService implements UserDetailsService {
     private final RoleRepo roleRepository;
 
 
-    public UserService(UserRepo userRepository, BCryptPasswordEncoder passwordEncoder, RoleRepo roleRepository) {
+    public AdminService(UserRepo userRepository, BCryptPasswordEncoder passwordEncoder, RoleRepo roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
@@ -51,8 +51,8 @@ public class UserService implements UserDetailsService {
         newUser.setUpdatedAt(LocalDateTime.now());
 
         // Set the role using RoleEnum
-        Role role = roleRepository.findByName(RoleEnum.USER)
-                .orElseThrow(() -> new RuntimeException("Role not found: " + RoleEnum.USER));
+        Role role = roleRepository.findByName(RoleEnum.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + RoleEnum.ADMIN));
         newUser.setRole(role);
 
         return userRepository.save(newUser);

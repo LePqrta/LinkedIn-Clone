@@ -33,12 +33,12 @@ public class SecurityConfig {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
-
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x ->
-                        x.requestMatchers("/auth/welcome/**", "/auth/addNewUser/**", "/auth/generateToken/**").permitAll()
+                        x.requestMatchers("/auth/welcome/**", "/auth/addNewUser/**", "/auth/generateToken/**","/auth/asd/**").permitAll()
                 )
                 .authorizeHttpRequests(x ->
                         x.requestMatchers("/auth/user").hasRole("USER")
