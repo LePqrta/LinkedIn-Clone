@@ -1,5 +1,6 @@
 package com.mrvalevictorian.backend.model;
 
+import com.mrvalevictorian.backend.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.*;
@@ -18,7 +19,8 @@ public class Role {
     private Long id;
 
     @Column(name = "name")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private RoleEnum name;
 
     @Column(name = "description")
     private String description;
