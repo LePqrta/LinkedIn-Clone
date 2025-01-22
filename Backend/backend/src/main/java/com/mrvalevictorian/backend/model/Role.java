@@ -25,7 +25,7 @@ public class Role implements GrantedAuthority {
     @Enumerated(EnumType.STRING)
     private RoleEnum name;
 
-    @Column(name = "desc")
+    @Column(name = "description")
     private String description;
 
     @Column(name = "created_at")
@@ -37,9 +37,5 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return name.name();
-    }
-
-    public RoleEnum getName() {
-        return name;
     }
 }

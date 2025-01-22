@@ -6,6 +6,7 @@ import com.mrvalevictorian.backend.model.Role;
 import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.repo.RoleRepo;
 import com.mrvalevictorian.backend.repo.UserRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService implements UserDetailsService {
 
     private final UserRepo userRepository;
@@ -23,14 +25,6 @@ public class AdminService implements UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final RoleRepo roleRepository;
-
-
-    public AdminService(UserRepo userRepository, BCryptPasswordEncoder passwordEncoder, RoleRepo roleRepository) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
-    }
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,8 +35,15 @@ public class AdminService implements UserDetailsService {
     public Optional<User> getByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-    public User createUser(CreateUserRequest request) {
-
+    public void createUser(CreateUserRequest request) throws IllegalStateException {
+        userRepository.findByUsername(request.getUsername())
+                .ifPresent(user -> {
+                    throw new IllegalStateException("User already exists: " + user.getUsername());
+                });
+        userRepository.findByEmail(request.getEmail())
+                .ifPresent(user -> {
+                    throw new IllegalStateException("Email already exists: " + user.getEmail());
+                });
         User newUser = new User();
         newUser.setUsername(request.getUsername());
         newUser.setEmail(request.getEmail());
@@ -55,6 +56,5 @@ public class AdminService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Role not found: " + RoleEnum.ADMIN));
         newUser.setRole(role);
 
-        return userRepository.save(newUser);
     }
 }
