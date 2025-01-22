@@ -18,7 +18,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepo roleRepository;
     private final UserRepo userRepository;
-    public User createUser(CreateUserRequest request) {
+    public void createUser(CreateUserRequest request) {
         userRepository.findByUsername(request.getUsername())
                 .ifPresent(user -> {
                     throw new IllegalStateException("User already exists: " + user.getUsername());
@@ -38,6 +38,5 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("Role not found: " + RoleEnum.USER));
         newUser.setRole(role);
 
-        return userRepository.save(newUser);
     }
 }
