@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -18,6 +21,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepo roleRepository;
     private final UserRepo userRepository;
+    private Map<String, User> tokenStorage = new HashMap<>();
+    private final EmailService emailService;
+
     public void createUser(CreateUserRequest request) {
         userRepository.findByUsername(request.getUsername())
                 .ifPresent(user -> {
@@ -38,5 +44,37 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("Role not found: " + RoleEnum.USER));
         newUser.setRole(role);
 
+        userRepository.save(newUser);
+
+//        try {
+//            // Doğrulama token'ı oluştur
+//            String token = createVerificationToken(newUser);
+//
+//            // Doğrulama email'i gönder
+//            emailService.sendVerificationEmail(newUser.getEmail(), token);
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to send verification email", e);
+//        }
     }
+
+
+    public String createVerificationToken(User user) {
+        // Benzersiz bir token oluştur
+        String token = UUID.randomUUID().toString();
+        tokenStorage.put(token, user);
+        return token;
+    }
+
+    public boolean verifyUser(String token) {
+        User user = tokenStorage.get(token);
+        if (user != null) {
+            user.setVerified(true);
+            userRepository.save(user);
+            tokenStorage.remove(token);
+            return true;
+        }
+        return false;
+    }
+
+
 }

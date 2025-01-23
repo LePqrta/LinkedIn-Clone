@@ -56,5 +56,6 @@ public class AdminService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Role not found: " + RoleEnum.ADMIN));
         newUser.setRole(role);
 
+        userRepository.save(newUser);
     }
 }

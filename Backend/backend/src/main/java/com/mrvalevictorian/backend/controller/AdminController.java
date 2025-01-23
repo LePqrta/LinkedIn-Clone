@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
+    
     @PostMapping("/add-new-admin")
     public ResponseEntity<String> addAdmin(@RequestBody CreateUserRequest request) {
         try{

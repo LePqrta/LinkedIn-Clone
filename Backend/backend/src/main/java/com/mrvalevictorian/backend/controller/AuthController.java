@@ -11,10 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +31,7 @@ public class AuthController {
     public ResponseEntity<String> addUser(@RequestBody CreateUserRequest request) {
         try {
             authService.createUser(request);
+
             return new ResponseEntity<>("User created successfully", HttpStatus.OK);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -51,4 +49,14 @@ public class AuthController {
         throw new UsernameNotFoundException("invalid username {} " + request.getUsername());
     }//postman scriptinin çalışması için json olarak alıyorum outputu.
     //generateToken'ı login yaptım içinde script'e bak script orada
+
+    @GetMapping("/verify")
+    public String verifyUser(@RequestParam("token") String token) {
+        boolean isVerified = authService.verifyUser(token);
+        if (isVerified) {
+            return "Email verified successfully.";
+        } else {
+            return "Invalid or expired token.";
+        }
+    }
 }
