@@ -31,7 +31,7 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password_hash")
     private String password;
 
     @Column(name = "created_at", nullable = false)
@@ -40,9 +40,8 @@ public class User implements UserDetails {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @Column(name= "role")
+    private String role;
 
     @Transient
     private boolean accountNonExpired = true;
@@ -56,7 +55,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role == null ? List.of() : List.of(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+        return role == null ? List.of() : List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
     public void setVerified(boolean b) {
         System.out.println("Email verified = " +b);
