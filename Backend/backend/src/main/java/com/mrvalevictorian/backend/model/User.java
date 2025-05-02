@@ -22,7 +22,7 @@ import java.util.UUID;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private UUID id;
 
     @Column(name = "username")
@@ -40,8 +40,16 @@ public class User implements UserDetails {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name= "role")
-    private String role;
+    @Column(name ="role")
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
+
+    @Column(name= "name")
+    private String name;
+
+    @Column(name= "surname")
+    private String surname;
+
 
     @Transient
     private boolean accountNonExpired = true;

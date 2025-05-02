@@ -47,7 +47,7 @@ public class AdminService implements UserDetailsService {
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
-        newUser.setRole(RoleEnum.ADMIN.name());
+        newUser.setRole(RoleEnum.ADMIN);
 
         userRepository.save(newUser);
     }
