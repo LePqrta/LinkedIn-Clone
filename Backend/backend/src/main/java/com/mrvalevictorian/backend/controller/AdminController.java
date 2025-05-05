@@ -5,11 +5,7 @@ import com.mrvalevictorian.backend.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class AdminController {
     private final AdminService adminService;
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add-new-admin")
     public ResponseEntity<String> addAdmin(@RequestBody CreateUserRequest request) {
         try{
@@ -26,5 +21,10 @@ public class AdminController {
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+    // to test if the controller is working
+    @GetMapping("/test")
+    public ResponseEntity<String> createPost() {
+        return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully");
     }
 }

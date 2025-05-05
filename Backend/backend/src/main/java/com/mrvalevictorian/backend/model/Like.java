@@ -15,7 +15,7 @@ import lombok.*;
 public class Like {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
     private int likeId;
 

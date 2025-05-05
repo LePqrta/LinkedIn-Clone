@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class Experience {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "experience_id")
     private int experienceId;
 

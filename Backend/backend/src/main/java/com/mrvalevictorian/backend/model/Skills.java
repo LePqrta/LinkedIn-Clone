@@ -26,4 +26,6 @@ public class Skills {
     @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
+    //Skill explanation may be added in the future
+
 }

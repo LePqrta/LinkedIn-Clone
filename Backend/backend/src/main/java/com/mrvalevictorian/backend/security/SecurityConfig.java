@@ -1,13 +1,13 @@
 package com.mrvalevictorian.backend.security;
 
 import com.mrvalevictorian.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -27,12 +27,6 @@ public class SecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
 
-
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserService userService, PasswordEncoder passwordEncoder) {
-        this.jwtAuthFilter = jwtAuthFilter;
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -43,6 +37,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(x ->
                         x.requestMatchers("/auth/user").hasRole("USER")
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/post/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/user/**").hasRole("ADMIN")
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

@@ -18,7 +18,7 @@ import java.util.UUID;
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepo userRepository;
-    private Map<String, User> tokenStorage = new HashMap<>();
+    private final Map<String, User> tokenStorage = new HashMap<>();
     private final EmailService emailService;
 
     public void createUser(CreateUserRequest request) {
