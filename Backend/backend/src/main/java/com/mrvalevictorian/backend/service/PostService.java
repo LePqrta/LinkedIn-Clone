@@ -30,7 +30,6 @@ public class PostService {
         // find the user by username, if exists, set the user, if not, throw an exception
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-
         Post post = new Post();
         post.setContent(postingRequest.getContent());
         post.setUser(user);
@@ -41,7 +40,6 @@ public class PostService {
     public List<Post> getAllPosts() {
         return postRepo.findAll();
     }
-
     public Post getPostById(UUID id) {
         return postRepo.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
     }
