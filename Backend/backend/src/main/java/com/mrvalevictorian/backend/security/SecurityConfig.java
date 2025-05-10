@@ -40,6 +40,8 @@ public class SecurityConfig {
                                 .requestMatchers("/post/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/user/**").hasRole("ADMIN")
                                 .requestMatchers("/connections/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/like/**").hasAnyRole("USER","ADMIN")
+
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

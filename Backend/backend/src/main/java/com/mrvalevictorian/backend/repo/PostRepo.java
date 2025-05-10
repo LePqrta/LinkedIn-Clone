@@ -2,10 +2,13 @@ package com.mrvalevictorian.backend.repo;
 
 import com.mrvalevictorian.backend.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import java.util.UUID;
+
+import java.util.Optional;
 
 @Repository
-public interface PostRepo extends JpaRepository<Post, UUID> {
-
+public interface PostRepo extends JpaRepository<Post, Long> {
+    @Query("SELECT p FROM Post p WHERE p.postId=?1")
+    Optional<Post> findPostByPostId(Long postId);
 }

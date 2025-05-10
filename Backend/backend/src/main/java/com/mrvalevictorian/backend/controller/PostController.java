@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/post")
@@ -30,8 +29,8 @@ public class PostController {
 
     // to test if the controller is working
     @GetMapping("/test")
-    public ResponseEntity<String> createPost() {
-        return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully");
+    public Post getPostById() {
+        return postService.getPostById(1L);
     }
 
     @GetMapping
@@ -39,8 +38,4 @@ public class PostController {
         return postService.getAllPosts();
     }
 
-    @GetMapping("/{id}")
-    public Post getPostById(@PathVariable String id) {
-        return postService.getPostById(UUID.fromString(id));
-    }
 }

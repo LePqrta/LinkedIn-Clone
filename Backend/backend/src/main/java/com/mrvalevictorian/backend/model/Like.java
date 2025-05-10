@@ -17,10 +17,10 @@ public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
-    private int likeId;
+    private Long likeId;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
     private Post post;
 
     @ManyToOne

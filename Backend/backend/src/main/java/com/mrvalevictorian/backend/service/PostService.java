@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +39,7 @@ public class PostService {
     public List<Post> getAllPosts() {
         return postRepo.findAll();
     }
-    public Post getPostById(UUID id) {
+    public Post getPostById(Long id) {
         return postRepo.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
     }
 }
