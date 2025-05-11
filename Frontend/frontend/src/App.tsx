@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import Navbar from './components/layout/Navbar';
@@ -27,39 +27,15 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
+        <Navbar />
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/home" element={
-            <>
-              <Navbar />
-              <Home />
-            </>
-          } />
-          <Route path="/profile" element={
-            <>
-              <Navbar />
-              <Profile />
-            </>
-          } />
-          <Route path="/network" element={
-            <>
-              <Navbar />
-              <Network />
-            </>
-          } />
-          <Route path="/jobs" element={
-            <>
-              <Navbar />
-              <Jobs />
-            </>
-          } />
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/network" element={<Network />} />
+          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={
-            <>
-              <Navbar />
-              <AdminPanel />
-            </>
-          } />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </Router>
     </ThemeProvider>
