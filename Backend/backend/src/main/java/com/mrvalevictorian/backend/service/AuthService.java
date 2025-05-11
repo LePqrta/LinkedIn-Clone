@@ -2,7 +2,9 @@ package com.mrvalevictorian.backend.service;
 
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
 import com.mrvalevictorian.backend.enums.RoleEnum;
+import com.mrvalevictorian.backend.model.Profile;
 import com.mrvalevictorian.backend.model.User;
+import com.mrvalevictorian.backend.repo.ProfileRepo;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ public class AuthService {
     private final UserRepo userRepository;
     private final Map<String, User> tokenStorage = new HashMap<>();
     private final EmailService emailService;
+    private final ProfileRepo profileRepo;
 
     public void createUser(CreateUserRequest request) {
         userRepository.findByUsername(request.getUsername())
@@ -38,6 +41,11 @@ public class AuthService {
         newUser.setRole(RoleEnum.USER);
 
         userRepository.save(newUser);
+
+        Profile newProfile = new Profile();
+        newProfile.setUser(newUser);
+        profileRepo.save(newProfile);
+
 
 //        try {
 //            // Doğrulama token'ı oluştur

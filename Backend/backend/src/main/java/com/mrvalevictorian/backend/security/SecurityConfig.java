@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 .requestMatchers("/connections/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/like/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/comment/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/skills/**").hasAnyRole("USER","ADMIN")
 
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
