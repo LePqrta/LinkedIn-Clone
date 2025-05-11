@@ -24,33 +24,29 @@ public class LikeService {
     private final JwtService jwtService;
 
     // Implement the logic for liking a post
-    public void likePost(LikeRequest request) {
-        Optional<Post> postOptional = postRepo.findPostByPostId(request.getPostId());
-        if (postOptional.isEmpty()) {
-            throw new RuntimeException("Post not found");
-        }
-        Post post = postOptional.get();
+    public String likePost(LikeRequest request) {
+        Post post = postRepo.findPostByPostId(request.getPostId())
+                .orElseThrow(() -> new RuntimeException("Post with ID " + request.getPostId() + " not found"));
+
         String username = jwtService.extractUser(jwtService.getToken());
         User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        // Check if the user has already liked the post
+                .orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
+
         Optional<Like> existingLike = likeRepo.findByPostIdAndUserId(request.getPostId(), user.getId());
         if (existingLike.isPresent()) {
-            // If the user has already liked the post, remove the like
             likeRepo.delete(existingLike.get());
+            return "Unliked";
         } else {
-            // If the user has not liked the post, add a new like
             Like like = new Like();
             like.setPost(post);
             like.setUser(user);
             likeRepo.save(like);
+            return "Liked";
         }
     }
 
-    public Optional<Long> getLikesCount(LikeRequest likeRequest) {
-        // Logic to get the count of likes for a post
-
-        return likeRepo.countAllByPostId(likeRequest.getPostId());
+    public Long getLikesCount(Long postId) {
+        return likeRepo.countAllByPostId(postId);
     }
 
 

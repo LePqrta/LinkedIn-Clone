@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface LikeRepo extends JpaRepository<Like, Long> {
     @Query("SELECT COUNT(l) FROM Like l WHERE l.post.postId = ?1")
-    Optional<Long> countAllByPostId(Long postId);
+    Long countAllByPostId(Long postId);
 
 
     @Query("SELECT l FROM Like l WHERE l.post.postId = ?1 AND l.user.id = ?2")
