@@ -29,6 +29,16 @@ public class SkillService {
         skillRepo.save(skill);
     }
 
+    public void deleteSkill(Long skillId) {
+        Skills skill = skillRepo.findById(skillId)
+                .orElseThrow(() -> new RuntimeException("Skill not found with ID: " + skillId));
+
+        skillRepo.delete(skill);
+    }
+
+
+
+
     public List<Skills> getSkillsByProfile(Long profileId) {
         if (!profileRepo.existsById(profileId)) {
             throw new RuntimeException("Profile not found with ID: " + profileId);

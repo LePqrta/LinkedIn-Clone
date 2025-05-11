@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/post")
@@ -24,6 +25,25 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully");
         }catch (UserNotFoundException | PostContentEmptyException e){
             return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/delete-post/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+        try {
+            postService.deletePost(postId);
+            return ResponseEntity.status(HttpStatus.OK).body("Post deleted successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+        }
+    }
+    @PutMapping("/edit-post/{postId}")
+    public ResponseEntity<String> editPost(@PathVariable Long postId, @RequestBody Map<String, String> requestBody) {
+        try {
+            String newContent = requestBody.get("content");
+            postService.editPost(postId, newContent);
+            return ResponseEntity.status(HttpStatus.OK).body("Post updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
         }
     }
 

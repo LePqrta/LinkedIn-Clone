@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.service;
 import com.mrvalevictorian.backend.dto.PostingRequest;
 import com.mrvalevictorian.backend.exceptions.UserNotFoundException;
 import com.mrvalevictorian.backend.exceptions.PostContentEmptyException;
+import com.mrvalevictorian.backend.exceptions.PostNotFoundException;
 import com.mrvalevictorian.backend.model.Post;
 import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.repo.PostRepo;
@@ -33,6 +34,40 @@ public class PostService {
         post.setContent(postingRequest.getContent());
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
+        postRepo.save(post);
+    }
+
+    public void deletePost(Long postId) {
+        // Post'un varlığını kontrol et
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post with ID " + postId + " not found"));
+
+        // JWT'den kullanıcı adını al
+        String username = jwtService.extractUser(jwtService.getToken());
+
+        // Postun sahibiyle eşleşme kontrolü
+        if (!post.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("You are not authorized to delete this post");
+        }
+
+        // Post bulundu ve yetki kontrolü geçtiyse sil
+        postRepo.delete(post);
+    }
+    public void editPost(Long postId, String newContent) {
+        // Post'un varlığını kontrol et
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post with ID " + postId + " not found"));
+
+        // JWT'den kullanıcı adını al
+        String username = jwtService.extractUser(jwtService.getToken());
+
+        // Postun sahibiyle eşleşme kontrolü
+        if (!post.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("You are not authorized to edit this post");
+        }
+
+        // Yeni içeriği ayarla ve kaydet
+        post.setContent(newContent);
         postRepo.save(post);
     }
 

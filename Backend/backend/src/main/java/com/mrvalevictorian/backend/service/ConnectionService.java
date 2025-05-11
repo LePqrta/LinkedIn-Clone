@@ -66,6 +66,8 @@ public class ConnectionService {
         connection.setStatus(StatusEnum.REJECTED);
         connectionRepo.save(connection);
     }
+
+
     // test edilecek
     public void removeConnection(int connectionId) {
         Connection connection = connectionRepo.findById(connectionId)
