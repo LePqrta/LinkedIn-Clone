@@ -13,7 +13,7 @@ const Navbar = () => {
         <Typography
           variant="h6"
           component={RouterLink}
-          to="/"
+          to="/home"
           sx={{
             color: 'primary.main',
             textDecoration: 'none',
@@ -31,7 +31,7 @@ const Navbar = () => {
           </IconButton>
           <Button
             component={RouterLink}
-            to="/"
+            to="/home"
             color="inherit"
             sx={{ mr: 2 }}
           >
