@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -77,9 +78,16 @@ public class ConnectionService {
         }
         connectionRepo.delete(connection);
     }
-//    public List<Connection> getConnectionsByUser(String username) {
-//        User user = userRepo.findByUsername(username)
-//                .orElseThrow(() -> new UserNotFoundException("User not found"));
-//        return connectionRepo.findBySenderOrReceiver(user);
-//    }
+    public List<Connection> getAcceptedConnectionsByUser() {
+        String username = jwtService.extractUser(jwtService.getToken());
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
+        return connectionRepo.findAcceptedConnections(user.getUsername());
+    }
+    public List<Connection> getPendingConnectionsByUser() {
+        String username = jwtService.extractUser(jwtService.getToken());
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
+        return connectionRepo.findPendingConnections(user.getUsername());
+    }
 }
