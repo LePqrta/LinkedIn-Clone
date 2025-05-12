@@ -11,6 +11,7 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,5 +50,8 @@ public class JobService {
             throw new AuthorizationDeniedException("You are not authorized to delete this job");
         }
         jobRepo.delete(job);
+    }
+    public List<Job> getAllJobs(){
+        return jobRepo.findAll();
     }
 }
