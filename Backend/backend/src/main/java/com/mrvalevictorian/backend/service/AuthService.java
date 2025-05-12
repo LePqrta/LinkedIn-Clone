@@ -36,6 +36,8 @@ public class AuthService {
         newUser.setUsername(request.getUsername());
         newUser.setEmail(request.getEmail());
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setName(request.getName());
+        newUser.setSurname(request.getSurname());
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
         newUser.setRole(RoleEnum.USER);
@@ -57,7 +59,6 @@ public class AuthService {
 //            throw new RuntimeException("Failed to send verification email", e);
 //        }
     }
-
 
     public String createVerificationToken(User user) {
         // Benzersiz bir token oluştur

@@ -67,7 +67,6 @@ public class ConnectionService {
         connectionRepo.save(connection);
     }
 
-
     // test edilecek
     public void removeConnection(int connectionId) {
         Connection connection = connectionRepo.findById(connectionId)

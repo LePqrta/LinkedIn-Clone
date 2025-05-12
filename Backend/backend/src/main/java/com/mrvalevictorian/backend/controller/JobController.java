@@ -1,10 +1,13 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.JobCreateRequest;
+import com.mrvalevictorian.backend.model.Job;
 import com.mrvalevictorian.backend.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +34,15 @@ public class JobController {
             return ResponseEntity.ok("Job deleted successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+    @GetMapping("/get-jobs")
+    public ResponseEntity<List<Job>> getAllJobs() {
+        try {
+            List<Job> jobs = jobService.getAllJobs();
+            return ResponseEntity.ok(jobs);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(500).body(null);
         }
     }
 }
