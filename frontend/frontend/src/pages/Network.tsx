@@ -68,6 +68,14 @@ const Network = () => {
     }
   };
 
+  // Compute a set of usernames who have sent us a pending invitation
+  const pendingSenderUsernames = new Set(
+    pendingInvitations
+      .filter(invitation => user && invitation.receiver?.username === user.username)
+      .map(invitation => invitation.sender?.username)
+      .filter(Boolean)
+  );
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Grid container spacing={3}>
@@ -124,36 +132,38 @@ const Network = () => {
               People You May Know
             </Typography>
             <Grid container spacing={2}>
-              {people.map((person, idx) => (
-                <Grid item xs={12} sm={6} md={4} key={person.id || idx}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <Avatar
-                      sx={{ width: 80, height: 80, mb: 2 }}
-                      src={"/path-to-avatar.jpg"}
-                    />
-                    <Typography variant="subtitle1">
-                      {person.name || 'User'} {person.surname || ''}
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      startIcon={<PersonAddIcon />}
-                      fullWidth
-                      disabled={!!requestSent[person.username]}
-                      onClick={() => handleConnect(person.username)}
+              {people
+                .filter(person => !pendingSenderUsernames.has(person.username))
+                .map((person, idx) => (
+                  <Grid item xs={12} sm={6} md={4} key={person.id || idx}>
+                    <Paper
+                      sx={{
+                        p: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        textAlign: 'center',
+                      }}
                     >
-                      {requestSent[person.username] ? 'Request Sent' : 'Connect'}
-                    </Button>
-                  </Paper>
-                </Grid>
-              ))}
+                      <Avatar
+                        sx={{ width: 80, height: 80, mb: 2 }}
+                        src={"/path-to-avatar.jpg"}
+                      />
+                      <Typography variant="subtitle1">
+                        {person.name || 'User'} {person.surname || ''}
+                      </Typography>
+                      <Button
+                        variant="outlined"
+                        startIcon={<PersonAddIcon />}
+                        fullWidth
+                        disabled={!!requestSent[person.username]}
+                        onClick={() => handleConnect(person.username)}
+                      >
+                        {requestSent[person.username] ? 'Request Sent' : 'Connect'}
+                      </Button>
+                    </Paper>
+                  </Grid>
+                ))}
             </Grid>
           </Paper>
         </Grid>
