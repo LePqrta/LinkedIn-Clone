@@ -26,7 +26,6 @@ public class ConnectionController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
-
     @PostMapping("/accept-connection")
     public ResponseEntity<String> acceptConnectionRequest(@RequestParam int connectionId) {
         try {

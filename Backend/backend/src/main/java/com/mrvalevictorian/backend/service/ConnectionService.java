@@ -83,7 +83,7 @@ public class ConnectionService {
         String username = jwtService.extractUser(jwtService.getToken());
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
-        return connectionRepo.findAcceptedConnections(user.getUsername());
+        return connectionRepo.findAcceptedConnections(user.getId());
     }
     public List<Connection> getPendingConnectionsByUser() {
         String username = jwtService.extractUser(jwtService.getToken());
