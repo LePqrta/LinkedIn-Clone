@@ -2,9 +2,6 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.AuthRequest;
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
-import com.mrvalevictorian.backend.exceptions.UserNotFoundException;
-import com.mrvalevictorian.backend.repo.UserRepo;
-import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.service.AuthService;
 import com.mrvalevictorian.backend.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +24,6 @@ public class AuthController {
 
     private final JwtService jwtService;
 
-    private final UserRepo userRepo;
-
     private final AuthenticationManager authenticationManager;
 
 
@@ -44,24 +39,16 @@ public class AuthController {
     }
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> generateToken(@RequestBody AuthRequest request) {
-        System.out.println("Login isteği alındı: " + request.getEmail());
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-            );
-            System.out.println("Authentication sonucu: " + authentication.isAuthenticated());
-            if (authentication.isAuthenticated()) {
-                String token = jwtService.generateToken(request.getEmail());
-                Map<String, String> response = new HashMap<>();
-                response.put("token", token);
-                return ResponseEntity.ok(response);
-            }
-            throw new UsernameNotFoundException("invalid username {} " + request.getEmail());
-        } catch (Exception e) {
-            System.out.println("Authentication hatası: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        if (authentication.isAuthenticated()) {
+            String token = jwtService.generateToken(request.getUsername());
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return ResponseEntity.ok(response);
         }
-    }
+        throw new UsernameNotFoundException("invalid username {} " + request.getUsername());
+    }//postman scriptinin çalışması için json olarak alıyorum outputu.
+    //generateToken'ı login yaptım içinde script'e bak script orada
 
     @GetMapping("/verify")
     public String verifyUser(@RequestParam("token") String token) {
@@ -71,14 +58,5 @@ public class AuthController {
         } else {
             return "Invalid or expired token.";
         }
-    }
-
-    @GetMapping("/test")
-    public User returnUser() {
-        String username = jwtService.extractUser(jwtService.getToken());
-        // find the user by username, if exists, set the user, if not, throw an exception
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        return user;
     }
 }
