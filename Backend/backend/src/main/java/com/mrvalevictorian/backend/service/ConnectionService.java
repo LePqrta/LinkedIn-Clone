@@ -92,4 +92,8 @@ public class ConnectionService {
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
         return connectionRepo.findPendingConnections(user.getUsername());
     }
+    public Connection getConnectionById(int connectionId) {
+        return connectionRepo.findById(connectionId)
+                .orElseThrow(() -> new RuntimeException("Connection not found"));
+    }
 }

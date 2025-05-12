@@ -41,7 +41,7 @@ public class SecurityConfig {
                         x.requestMatchers("/auth/user").hasRole("USER")
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/post/**").hasAnyRole("USER","ADMIN")
-                                .requestMatchers("/user/**").hasRole("ADMIN")
+                                .requestMatchers("/user/**").hasAnyRole("ADMIN","USER")
                                 .requestMatchers("/connections/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/like/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/comment/**").hasAnyRole("USER","ADMIN")
