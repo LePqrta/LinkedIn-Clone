@@ -35,8 +35,6 @@ public class SkillController {
     }
 
 
-
-
     @GetMapping("/profile/{profileId}")
     public ResponseEntity<List<Skills>> getSkillsByProfile(@PathVariable Long profileId) {
         List<Skills> skills = skillService.getSkillsByProfile(profileId);
