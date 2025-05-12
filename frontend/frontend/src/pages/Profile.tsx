@@ -17,8 +17,20 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WorkIcon from '@mui/icons-material/Work';
 import SchoolIcon from '@mui/icons-material/School';
 import EditIcon from '@mui/icons-material/Edit';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const fullName = user ? `${user.name || ''} ${user.surname || ''}`.trim() : 'User';
+  const username = user?.username || '';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       {/* Profile Header */}
@@ -64,7 +76,7 @@ const Profile = () => {
           >
             Edit Profile
           </Button>
-          <Button variant="contained">More</Button>
+          <Button variant="contained" color="error" onClick={handleLogout}>Logout</Button>
         </Box>
       </Paper>
 

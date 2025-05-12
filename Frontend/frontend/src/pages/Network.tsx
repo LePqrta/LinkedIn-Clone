@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Grid,
@@ -16,8 +16,56 @@ import {
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
 
 const Network = () => {
+  const [people, setPeople] = useState<any[]>([]);
+  const [pendingInvitations, setPendingInvitations] = useState<any[]>([]);
+  const [requestSent, setRequestSent] = useState<{ [username: string]: boolean }>({});
+
+  useEffect(() => {
+    const fetchPeople = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return setPeople([]);
+        const response = await axios.get('http://localhost:8080/user/users-without-connection', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setPeople(Array.isArray(response.data) ? response.data.slice(0, 6) : []);
+      } catch (err) {
+        setPeople([]);
+      }
+    };
+    const fetchInvitations = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return setPendingInvitations([]);
+        const response = await axios.get('http://localhost:8080/connections/pending-connections', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setPendingInvitations(Array.isArray(response.data) ? response.data.slice(0, 6) : []);
+      } catch (err) {
+        setPendingInvitations([]);
+      }
+    };
+    fetchPeople();
+    fetchInvitations();
+  }, []);
+
+  const handleConnect = async (username: string) => {
+    setRequestSent((prev) => ({ ...prev, [username]: true }));
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        'http://localhost:8080/connections/send-connection',
+        { username },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (err) {
+      // Optionally handle error, revert button if needed
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Grid container spacing={3}>
@@ -28,15 +76,15 @@ const Network = () => {
               Invitations
             </Typography>
             <List>
-              {[1, 2, 3].map((invitation) => (
-                <React.Fragment key={invitation}>
+              {pendingInvitations.map((invitation, idx) => (
+                <React.Fragment key={invitation.id || idx}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar src={`/path-to-avatar-${invitation}.jpg`} />
+                      <Avatar src={`/path-to-avatar.jpg`} />
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`User ${invitation}`}
-                      secondary="Software Engineer at Company"
+                      primary={invitation.sender?.name ? `${invitation.sender.name} ${invitation.sender.surname || ''}` : invitation.sender?.username || 'User'}
+                      secondary={invitation.sender?.username ? `@${invitation.sender.username}` : ''}
                     />
                     <Box>
                       <Button
@@ -44,6 +92,7 @@ const Network = () => {
                         size="small"
                         startIcon={<CheckIcon />}
                         sx={{ mr: 1 }}
+                        disabled
                       >
                         Accept
                       </Button>
@@ -51,6 +100,7 @@ const Network = () => {
                         variant="outlined"
                         size="small"
                         startIcon={<CloseIcon />}
+                        disabled
                       >
                         Ignore
                       </Button>
@@ -70,8 +120,8 @@ const Network = () => {
               People You May Know
             </Typography>
             <Grid container spacing={2}>
-              {[1, 2, 3, 4, 5, 6].map((person) => (
-                <Grid item xs={12} sm={6} md={4} key={person}>
+              {people.map((person, idx) => (
+                <Grid item xs={12} sm={6} md={4} key={person.id || idx}>
                   <Paper
                     sx={{
                       p: 2,
@@ -83,18 +133,19 @@ const Network = () => {
                   >
                     <Avatar
                       sx={{ width: 80, height: 80, mb: 2 }}
-                      src={`/path-to-avatar-${person}.jpg`}
+                      src={"/path-to-avatar.jpg"}
                     />
-                    <Typography variant="subtitle1">User {person}</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      Software Engineer at Company
+                    <Typography variant="subtitle1">
+                      {person.name || 'User'} {person.surname || ''}
                     </Typography>
                     <Button
                       variant="outlined"
                       startIcon={<PersonAddIcon />}
                       fullWidth
+                      disabled={!!requestSent[person.username]}
+                      onClick={() => handleConnect(person.username)}
                     >
-                      Connect
+                      {requestSent[person.username] ? 'Request Sent' : 'Connect'}
                     </Button>
                   </Paper>
                 </Grid>
