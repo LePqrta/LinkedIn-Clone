@@ -14,9 +14,8 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    @Query("SELECT u FROM User u WHERE u.id <> :myId AND u.id NOT IN " +
-            "(SELECT c.sender.id FROM Connection c WHERE c.receiver.id = :myId OR c.sender.id = :myId OR c.receiver.id = u.id OR c.sender.id = u.id)" +
-            " AND u.id NOT IN (SELECT c.receiver.id FROM Connection c " +
-            "WHERE c.sender.id = :myId OR c.receiver.id = :myId OR c.receiver.id = u.id OR c.sender.id = u.id)")
+@Query("SELECT u FROM User u WHERE u.id <> :myId AND u.id NOT IN (" +
+        "SELECT CASE WHEN c.sender.id = :myId THEN c.receiver.id ELSE c.sender.id END " +
+        "FROM Connection c WHERE (c.sender.id = :myId OR c.receiver.id = :myId) AND c.status = 'ACCEPTED')")
     List<User> findAllUsersWithoutConnection(@Param("myId") UUID myId);
 }
