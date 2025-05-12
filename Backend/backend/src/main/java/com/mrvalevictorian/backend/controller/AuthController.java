@@ -2,8 +2,10 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.AuthRequest;
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
+import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.service.AuthService;
 import com.mrvalevictorian.backend.service.JwtService;
+import com.mrvalevictorian.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-
+    private final UserService userService;
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
@@ -41,9 +43,14 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> generateToken(@RequestBody AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         if (authentication.isAuthenticated()) {
+            User user=userService.getByUsername(request.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
             String token = jwtService.generateToken(request.getUsername());
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
+            response.put("name", user.getName());
+            response.put("surname", user.getSurname());
+
             return ResponseEntity.ok(response);
         }
         throw new UsernameNotFoundException("invalid username {} " + request.getUsername());
