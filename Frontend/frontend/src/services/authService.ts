@@ -11,6 +11,16 @@ export const authService = {
     return response.data;
   },
 
+  async register(data: { username: string; email: string; password: string; name?: string; surname?: string }) {
+    return await axios.post(`${API_URL}/auth/register`, {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      surname: data.surname,
+    });
+  },
+
   logout() {
     localStorage.removeItem('token');
   },
@@ -34,16 +44,5 @@ export const authService = {
       return response.data[0];
     }
     return response.data;
-  },
-
-  async register(data: { username: string; email: string; password: string; name?: string; surname?: string }) {
-    // Only username, email, and password are required by backend, but we send all fields
-    return await axios.post(`${API_URL}/auth/register`, {
-      username: data.username,
-      email: data.email,
-      password: data.password,
-      name: data.name,
-      surname: data.surname,
-    });
   },
 }; 

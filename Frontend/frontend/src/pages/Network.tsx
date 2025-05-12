@@ -25,6 +25,7 @@ const Network = () => {
     const fetchPeople = async () => {
       try {
         const token = localStorage.getItem('token');
+        if (!token) return setPeople([]);
         const response = await axios.get('http://localhost:8080/user/users-without-connection', {
           headers: { Authorization: `Bearer ${token}` },
         });
