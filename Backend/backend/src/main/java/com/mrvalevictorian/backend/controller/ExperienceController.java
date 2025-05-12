@@ -1,0 +1,42 @@
+package com.mrvalevictorian.backend.controller;
+
+import com.mrvalevictorian.backend.dto.ExperienceRequest;
+import com.mrvalevictorian.backend.model.Experience;
+import com.mrvalevictorian.backend.service.ExperienceService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/experiences")
+@RequiredArgsConstructor
+public class ExperienceController {
+
+    private final ExperienceService experienceService;
+
+    @PostMapping("/create-experience")
+    public ResponseEntity<String> createExperience(@RequestBody ExperienceRequest experienceRequest) {
+        experienceService.createExperience(experienceRequest);
+        return ResponseEntity.ok("Experience created successfully");
+    }
+
+    @DeleteMapping("/delete-experience/{experienceId}")
+    public ResponseEntity<String> deleteExperience(@PathVariable Integer experienceId) {
+        try {
+            experienceService.deleteExperience(experienceId);
+            return ResponseEntity.ok("Experience deleted successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/profile/{profileId}")
+    public ResponseEntity<List<Experience>> getExperiencesByProfile(@PathVariable Long profileId) {
+        List<Experience> experiences = experienceService.getExperiencesByProfile(profileId);
+        return ResponseEntity.ok(experiences);
+    }
+}
+

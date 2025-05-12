@@ -1,5 +1,6 @@
 package com.mrvalevictorian.backend.security;
 
+import com.mrvalevictorian.backend.repo.UserRepo;
 import com.mrvalevictorian.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,8 @@ public class SecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final UserRepo userRepo;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -38,12 +41,14 @@ public class SecurityConfig {
                         x.requestMatchers("/auth/user").hasRole("USER")
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/post/**").hasAnyRole("USER","ADMIN")
-                                .requestMatchers("/user/**").hasRole("ADMIN")
+                                .requestMatchers("/user/**").hasAnyRole("ADMIN","USER")
                                 .requestMatchers("/connections/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/like/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/comment/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/skills/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/jobs/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/application/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/experiences/**").hasAnyRole("USER","ADMIN")
 
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -63,5 +68,4 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
 
     }
-
 }

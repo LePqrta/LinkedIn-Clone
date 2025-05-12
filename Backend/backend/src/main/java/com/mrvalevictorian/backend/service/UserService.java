@@ -19,16 +19,25 @@ public class UserService implements UserDetailsService {
 
     private final UserRepo userRepository;
 
+    private final JwtService jwtService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
-        return user.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
+        return user.orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
+
     public Optional<User> getByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+    public List<User> getAllUsersWithoutConnection() {
+        String username = jwtService.extractUser(jwtService.getToken());
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        return userRepository.findAllUsersWithoutConnection(user.getId());
     }
 }
