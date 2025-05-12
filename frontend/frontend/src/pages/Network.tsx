@@ -20,6 +20,8 @@ import axios from 'axios';
 
 const Network = () => {
   const [people, setPeople] = useState<any[]>([]);
+  const [pendingInvitations, setPendingInvitations] = useState<any[]>([]);
+  const [requestSent, setRequestSent] = useState<{ [username: string]: boolean }>({});
 
   useEffect(() => {
     const fetchPeople = async () => {
@@ -34,8 +36,35 @@ const Network = () => {
         setPeople([]);
       }
     };
+    const fetchInvitations = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return setPendingInvitations([]);
+        const response = await axios.get('http://localhost:8080/connections/pending-connections', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setPendingInvitations(Array.isArray(response.data) ? response.data.slice(0, 6) : []);
+      } catch (err) {
+        setPendingInvitations([]);
+      }
+    };
     fetchPeople();
+    fetchInvitations();
   }, []);
+
+  const handleConnect = async (username: string) => {
+    setRequestSent((prev) => ({ ...prev, [username]: true }));
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        'http://localhost:8080/connections/send-connection',
+        { username },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (err) {
+      // Optionally handle error, revert button if needed
+    }
+  };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -47,15 +76,15 @@ const Network = () => {
               Invitations
             </Typography>
             <List>
-              {[1, 2, 3].map((invitation) => (
-                <React.Fragment key={invitation}>
+              {pendingInvitations.map((invitation, idx) => (
+                <React.Fragment key={invitation.id || idx}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar src={`/path-to-avatar-${invitation}.jpg`} />
+                      <Avatar src={`/path-to-avatar.jpg`} />
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`User ${invitation}`}
-                      secondary="Software Engineer at Company"
+                      primary={invitation.sender?.name ? `${invitation.sender.name} ${invitation.sender.surname || ''}` : invitation.sender?.username || 'User'}
+                      secondary={invitation.sender?.username ? `@${invitation.sender.username}` : ''}
                     />
                     <Box>
                       <Button
@@ -63,6 +92,7 @@ const Network = () => {
                         size="small"
                         startIcon={<CheckIcon />}
                         sx={{ mr: 1 }}
+                        disabled
                       >
                         Accept
                       </Button>
@@ -70,6 +100,7 @@ const Network = () => {
                         variant="outlined"
                         size="small"
                         startIcon={<CloseIcon />}
+                        disabled
                       >
                         Ignore
                       </Button>
@@ -111,8 +142,10 @@ const Network = () => {
                       variant="outlined"
                       startIcon={<PersonAddIcon />}
                       fullWidth
+                      disabled={!!requestSent[person.username]}
+                      onClick={() => handleConnect(person.username)}
                     >
-                      Connect
+                      {requestSent[person.username] ? 'Request Sent' : 'Connect'}
                     </Button>
                   </Paper>
                 </Grid>
