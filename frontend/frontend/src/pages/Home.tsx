@@ -4,8 +4,12 @@ import CreateIcon from '@mui/icons-material/Create';
 import PhotoIcon from '@mui/icons-material/Photo';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import EventIcon from '@mui/icons-material/Event';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
+  const { user } = useAuth();
+  const fullName = user ? `${user.name || ''} ${user.surname || ''}`.trim() : 'User';
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Grid container spacing={3}>
@@ -17,9 +21,9 @@ const Home = () => {
                 sx={{ width: 80, height: 80, mx: 'auto', mb: 1 }}
                 src="/path-to-profile-image.jpg"
               />
-              <Typography variant="h6">John Doe</Typography>
+              <Typography variant="h6">{fullName}</Typography>
               <Typography variant="body2" color="text.secondary">
-                Software Engineer
+                {user?.role || 'User'}
               </Typography>
             </Box>
             <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2 }}>

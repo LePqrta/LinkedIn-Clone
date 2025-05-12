@@ -11,6 +11,9 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import AdminPanel from './pages/admin/AdminPanel';
 import ForgotPassword from './pages/auth/ForgotPassword';
+import UserInfo from './pages/UserInfo';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const theme = createTheme({
   palette: {
@@ -32,15 +35,58 @@ const AppContent = () => {
     <>
       {!isAuthPage && <Navbar />}
       <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/network" element={<Network />} />
-        <Route path="/jobs" element={<Jobs />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/admin" element={<AdminPanel />} />
+        <Route
+          path="/user"
+          element={
+            <ProtectedRoute>
+              <UserInfo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/network"
+          element={
+            <ProtectedRoute>
+              <Network />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs"
+          element={
+            <ProtectedRoute>
+              <Jobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPanel />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/home" replace />} />
       </Routes>
     </>
   );
@@ -50,9 +96,11 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <AppContent />
-      </Router>
+      <AuthProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

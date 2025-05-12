@@ -17,8 +17,19 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WorkIcon from '@mui/icons-material/Work';
 import SchoolIcon from '@mui/icons-material/School';
 import EditIcon from '@mui/icons-material/Edit';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const fullName = user ? `${user.name || ''} ${user.surname || ''}`.trim() : 'User';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       {/* Profile Header */}
@@ -48,8 +59,8 @@ const Profile = () => {
             src="/path-to-profile-image.jpg"
           />
           <Box sx={{ ml: 2, mb: 2 }}>
-            <Typography variant="h4">John Doe</Typography>
-            <Typography variant="body1">Software Engineer at Tech Corp</Typography>
+            <Typography variant="h4">{fullName}</Typography>
+            <Typography variant="body1">{user?.role || 'User'}</Typography>
             <Typography variant="body2" color="text.secondary">
               <LocationOnIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
               San Francisco, California
@@ -64,7 +75,7 @@ const Profile = () => {
           >
             Edit Profile
           </Button>
-          <Button variant="contained">More</Button>
+          <Button variant="contained" color="error" onClick={handleLogout}>Logout</Button>
         </Box>
       </Paper>
 

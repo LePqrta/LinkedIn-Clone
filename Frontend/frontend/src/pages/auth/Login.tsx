@@ -11,41 +11,43 @@ import {
   Alert,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-
-interface LoginFormData {
-  email: string;
-  password: string;
-}
+import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState<string>('');
+  const { login, isAuthenticated } = useAuth();
+  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/user');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    // Simple frontend validation
-    if (!formData.email || !formData.password) {
-      setError('Please fill in all fields');
-      return;
+    setIsLoading(true);
+    try {
+      if (!formData.username || !formData.password) {
+        setError('Please fill in all fields');
+        setIsLoading(false);
+        return;
+      }
+      await login(formData.username, formData.password);
+      navigate('/home');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid credentials');
+    } finally {
+      setIsLoading(false);
     }
-
-    // For demo purposes, we'll just navigate to home
-    // In a real app, this would be replaced with actual authentication
-    navigate('/home');
   };
 
   return (
@@ -60,24 +62,18 @@ const Login = () => {
         <Typography variant="body1" align="center" sx={{ mb: 3 }}>
           Stay updated on your professional world
         </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email or Phone"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
-            value={formData.email}
+            value={formData.username}
             onChange={handleChange}
           />
           <TextField
@@ -97,8 +93,9 @@ const Login = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={isLoading}
           >
-            Sign In
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </Button>
           <Box sx={{ textAlign: 'center', mb: 2 }}>
             <Link component={RouterLink} to="/forgot-password" variant="body2">
@@ -106,7 +103,7 @@ const Login = () => {
             </Link>
           </Box>
           <Divider sx={{ my: 2 }}>or</Divider>
-          <Box sx={{ textAlign: 'center' }}>
+          <Box>
             <Typography variant="body2" sx={{ mb: 2 }}>
               New to LinkedIn?
             </Typography>
