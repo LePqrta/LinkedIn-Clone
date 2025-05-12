@@ -1,25 +1,25 @@
 package com.mrvalevictorian.backend.model;
 
+
+import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.*;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "comments")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "posts")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class Comment {
+public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
-    private Long commentId;
-
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;
+    @Column(name = "post_id")
+    private Long postId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

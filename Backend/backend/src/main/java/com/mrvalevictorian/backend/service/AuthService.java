@@ -2,9 +2,9 @@ package com.mrvalevictorian.backend.service;
 
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
 import com.mrvalevictorian.backend.enums.RoleEnum;
-import com.mrvalevictorian.backend.model.Role;
+import com.mrvalevictorian.backend.model.Profile;
 import com.mrvalevictorian.backend.model.User;
-import com.mrvalevictorian.backend.repo.RoleRepo;
+import com.mrvalevictorian.backend.repo.ProfileRepo;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,10 +19,10 @@ import java.util.UUID;
 @Service
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepo roleRepository;
     private final UserRepo userRepository;
-    private Map<String, User> tokenStorage = new HashMap<>();
+    private final Map<String, User> tokenStorage = new HashMap<>();
     private final EmailService emailService;
+    private final ProfileRepo profileRepo;
 
     public void createUser(CreateUserRequest request) {
         userRepository.findByUsername(request.getUsername())
@@ -38,13 +38,14 @@ public class AuthService {
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
-
-        // Set the role using RoleEnum
-        Role role = roleRepository.findByName(RoleEnum.USER)
-                .orElseThrow(() -> new RuntimeException("Role not found: " + RoleEnum.USER));
-        newUser.setRole(role);
+        newUser.setRole(RoleEnum.USER);
 
         userRepository.save(newUser);
+
+        Profile newProfile = new Profile();
+        newProfile.setUser(newUser);
+        profileRepo.save(newProfile);
+
 
 //        try {
 //            // Doğrulama token'ı oluştur

@@ -2,9 +2,7 @@ package com.mrvalevictorian.backend.service;
 
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
 import com.mrvalevictorian.backend.enums.RoleEnum;
-import com.mrvalevictorian.backend.model.Role;
 import com.mrvalevictorian.backend.model.User;
-import com.mrvalevictorian.backend.repo.RoleRepo;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +22,6 @@ public class AdminService implements UserDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    private final RoleRepo roleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -50,11 +47,7 @@ public class AdminService implements UserDetailsService {
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
-
-        // Set the role using RoleEnum
-        Role role = roleRepository.findByName(RoleEnum.ADMIN)
-                .orElseThrow(() -> new RuntimeException("Role not found: " + RoleEnum.ADMIN));
-        newUser.setRole(role);
+        newUser.setRole(RoleEnum.ADMIN);
 
         userRepository.save(newUser);
     }
