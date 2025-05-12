@@ -22,12 +22,10 @@ const Home = () => {
                 sx={{ width: 80, height: 80, mx: 'auto', mb: 1 }}
                 src="/path-to-profile-image.jpg"
               />
-              <Typography variant="h6">{fullName}</Typography>
-              {username && (
-                <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: 14, mt: 0.5 }}>
-                  @{username}
-                </Typography>
-              )}
+              <Typography variant="h6">John Doe</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Software Engineer
+              </Typography>
             </Box>
             <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2 }}>
               <Typography variant="body2" color="text.secondary">

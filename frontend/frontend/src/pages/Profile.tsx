@@ -60,13 +60,8 @@ const Profile = () => {
             src="/path-to-profile-image.jpg"
           />
           <Box sx={{ ml: 2, mb: 2 }}>
-            <Typography variant="h4">{fullName}</Typography>
-            {username && (
-              <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: 16, mt: 0.5 }}>
-                @{username}
-              </Typography>
-            )}
-            <Typography variant="body1">{user?.role || 'User'}</Typography>
+            <Typography variant="h4">John Doe</Typography>
+            <Typography variant="body1">Software Engineer at Tech Corp</Typography>
             <Typography variant="body2" color="text.secondary">
               <LocationOnIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
               San Francisco, California

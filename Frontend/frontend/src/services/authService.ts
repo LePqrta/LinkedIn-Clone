@@ -26,9 +26,13 @@ export const authService = {
   async getUserInfo() {
     const token = this.getToken();
     if (!token) throw new Error('No token');
-    const response = await axios.get(`${API_URL}/user/me`, {
+    const response = await axios.get(`${API_URL}/user/test`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    // If the endpoint returns an array, return the first user (current user)
+    if (Array.isArray(response.data)) {
+      return response.data[0];
+    }
     return response.data;
   },
 
