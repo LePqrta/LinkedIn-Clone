@@ -22,7 +22,7 @@ const Home = () => {
                 sx={{ width: 80, height: 80, mx: 'auto', mb: 1 }}
                 src="/path-to-profile-image.jpg"
               />
-              <Typography variant="h6">John Doe</Typography>
+              <Typography variant="h6">{fullName}</Typography>
               <Typography variant="body2" color="text.secondary">
                 Software Engineer
               </Typography>

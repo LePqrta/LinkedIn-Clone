@@ -17,8 +17,10 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const Network = () => {
+  const { user } = useAuth();
   const [people, setPeople] = useState<any[]>([]);
   const [pendingInvitations, setPendingInvitations] = useState<any[]>([]);
   const [requestSent, setRequestSent] = useState<{ [username: string]: boolean }>({});
@@ -76,39 +78,41 @@ const Network = () => {
               Invitations
             </Typography>
             <List>
-              {pendingInvitations.map((invitation, idx) => (
-                <React.Fragment key={invitation.id || idx}>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar src={`/path-to-avatar.jpg`} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={invitation.sender?.name ? `${invitation.sender.name} ${invitation.sender.surname || ''}` : invitation.sender?.username || 'User'}
-                      secondary={invitation.sender?.username ? `@${invitation.sender.username}` : ''}
-                    />
-                    <Box>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        startIcon={<CheckIcon />}
-                        sx={{ mr: 1 }}
-                        disabled
-                      >
-                        Accept
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        startIcon={<CloseIcon />}
-                        disabled
-                      >
-                        Ignore
-                      </Button>
-                    </Box>
-                  </ListItem>
-                  <Divider />
-                </React.Fragment>
-              ))}
+              {pendingInvitations
+                .filter(invitation => user && invitation.receiver?.username === user.username)
+                .map((invitation, idx) => (
+                  <React.Fragment key={invitation.id || idx}>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar src={`/path-to-avatar.jpg`} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={invitation.sender?.name ? `${invitation.sender.name} ${invitation.sender.surname || ''}` : invitation.sender?.username || 'User'}
+                        secondary={invitation.sender?.username ? `@${invitation.sender.username}` : ''}
+                      />
+                      <Box>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          startIcon={<CheckIcon />}
+                          sx={{ mr: 1 }}
+                          disabled
+                        >
+                          Accept
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          startIcon={<CloseIcon />}
+                          disabled
+                        >
+                          Ignore
+                        </Button>
+                      </Box>
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                ))}
             </List>
           </Paper>
         </Grid>

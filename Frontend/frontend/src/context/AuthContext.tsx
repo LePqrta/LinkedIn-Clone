@@ -37,15 +37,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (username: string, password: string) => {
-    await authService.login(username, password);
+    const loginResponse = await authService.login(username, password);
     setIsAuthenticated(true);
-    const data = await authService.getUserInfo();
     setUser({
-      username: data.username,
-      email: data.email,
-      name: data.name,
-      surname: data.surname,
-      role: data.role,
+      username,
+      email: loginResponse.email,
+      name: loginResponse.name,
+      surname: loginResponse.surname,
+      role: loginResponse.role,
     });
   };
 

@@ -60,7 +60,7 @@ const Profile = () => {
             src="/path-to-profile-image.jpg"
           />
           <Box sx={{ ml: 2, mb: 2 }}>
-            <Typography variant="h4">John Doe</Typography>
+            <Typography variant="h4">{fullName}</Typography>
             <Typography variant="body1">Software Engineer at Tech Corp</Typography>
             <Typography variant="body2" color="text.secondary">
               <LocationOnIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />
