@@ -6,7 +6,6 @@ import com.mrvalevictorian.backend.model.Job;
 import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.repo.JobRepo;
 import com.mrvalevictorian.backend.repo.UserRepo;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,9 @@ public class JobService {
                 jobCreateRequest.getCompanyName().isEmpty()) {
             throw new IllegalArgumentException("Missing information either in " +
                     "title or description or location or company name");
+        }
+        if(jobRepo.findByTitle(jobCreateRequest.getTitle()).isPresent()) {
+            throw new IllegalArgumentException("Job with this title already exists");
         }
         String username = jwtService.extractUser(jwtService.getToken());
         User user = userRepo.findByUsername(username)
