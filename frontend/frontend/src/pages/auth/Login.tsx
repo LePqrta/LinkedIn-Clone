@@ -22,7 +22,7 @@ const Login = () => {
 
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/user');
+      navigate('/home');
     }
   }, [isAuthenticated, navigate]);
 

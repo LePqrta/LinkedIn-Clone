@@ -26,7 +26,7 @@ export const authService = {
   async getUserInfo() {
     const token = this.getToken();
     if (!token) throw new Error('No token');
-    const response = await axios.get(`${API_URL}/user/test`, {
+    const response = await axios.get(`${API_URL}/user/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;

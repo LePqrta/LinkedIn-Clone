@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 const Home = () => {
   const { user } = useAuth();
   const fullName = user ? `${user.name || ''} ${user.surname || ''}`.trim() : 'User';
+  const username = user?.username || '';
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -22,9 +23,11 @@ const Home = () => {
                 src="/path-to-profile-image.jpg"
               />
               <Typography variant="h6">{fullName}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {user?.role || 'User'}
-              </Typography>
+              {username && (
+                <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: 14, mt: 0.5 }}>
+                  @{username}
+                </Typography>
+              )}
             </Box>
             <Box sx={{ borderTop: 1, borderColor: 'divider', pt: 2 }}>
               <Typography variant="body2" color="text.secondary">

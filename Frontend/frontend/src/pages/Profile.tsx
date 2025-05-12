@@ -24,6 +24,7 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const fullName = user ? `${user.name || ''} ${user.surname || ''}`.trim() : 'User';
+  const username = user?.username || '';
 
   const handleLogout = () => {
     logout();
@@ -60,6 +61,11 @@ const Profile = () => {
           />
           <Box sx={{ ml: 2, mb: 2 }}>
             <Typography variant="h4">{fullName}</Typography>
+            {username && (
+              <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: 16, mt: 0.5 }}>
+                @{username}
+              </Typography>
+            )}
             <Typography variant="body1">{user?.role || 'User'}</Typography>
             <Typography variant="body2" color="text.secondary">
               <LocationOnIcon sx={{ fontSize: 16, verticalAlign: 'middle', mr: 0.5 }} />

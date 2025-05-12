@@ -24,15 +24,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (authService.isAuthenticated()) {
-      authService.getUserInfo().then(setUser).catch(() => setUser(null));
+      authService.getUserInfo().then((data) => {
+        setUser({
+          username: data.username,
+          email: data.email,
+          name: data.name,
+          surname: data.surname,
+          role: data.role,
+        });
+      }).catch(() => setUser(null));
     }
   }, []);
 
   const login = async (username: string, password: string) => {
     await authService.login(username, password);
     setIsAuthenticated(true);
-    const userInfo = await authService.getUserInfo();
-    setUser(userInfo);
+    const data = await authService.getUserInfo();
+    setUser({
+      username: data.username,
+      email: data.email,
+      name: data.name,
+      surname: data.surname,
+      role: data.role,
+    });
   };
 
   const logout = () => {
