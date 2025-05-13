@@ -63,4 +63,13 @@ public class JobController {
                 return ResponseEntity.status(500).body(null);
         }
     }
+    @GetMapping("/get-jobs-created")
+    public ResponseEntity<List<Job>> getJobsCreated() {
+        try {
+            List<Job> jobs = jobService.getByUserId();
+            return ResponseEntity.ok(jobs);
+        } catch (IllegalArgumentException _) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

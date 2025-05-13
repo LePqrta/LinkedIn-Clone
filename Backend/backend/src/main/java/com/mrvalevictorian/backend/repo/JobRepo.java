@@ -18,6 +18,8 @@ public interface JobRepo extends JpaRepository<Job, Integer> {
 
     @Query("SELECT j FROM Job j WHERE j.jobId IN (SELECT a.job.jobId FROM Application a WHERE a.user.id = :userId)")
     List<Job> findJobsApplied(@Param("userId") UUID userId);
+
+    List<Job> findByUserId(UUID userId);
 }
 
 

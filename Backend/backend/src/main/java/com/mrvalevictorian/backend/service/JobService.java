@@ -67,4 +67,10 @@ public class JobService {
                 .orElseThrow(() -> new UserNotFoundException("Authentication error"));
         return jobRepo.findJobsApplied(user.getId());
     }
+    public List<Job> getByUserId(){
+        String username = jwtService.extractUser(jwtService.getToken());
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Authentication error"));
+        return jobRepo.findByUserId(user.getId());
+    }
 }
