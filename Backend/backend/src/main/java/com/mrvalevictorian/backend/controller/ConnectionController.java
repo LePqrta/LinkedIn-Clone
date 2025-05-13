@@ -65,7 +65,16 @@ public class ConnectionController {
     @GetMapping("/pending-connections")
     public ResponseEntity<List<Connection>> getPendingConnections() {
         try {
-            List<Connection> connections = connectionService.getPendingConnectionsByUser();
+            List<Connection> connections = connectionService.getPendingConnectionsForNotification();
+            return ResponseEntity.ok(connections);
+        } catch (UserNotFoundException _) {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
+    @GetMapping("/pending-connections-sender")
+    public ResponseEntity<List<Connection>> getPendingConnectionsForSender() {
+        try {
+            List<Connection> connections = connectionService.getPendingConnectionsForSender();
             return ResponseEntity.ok(connections);
         } catch (UserNotFoundException _) {
             return ResponseEntity.status(404).body(null);

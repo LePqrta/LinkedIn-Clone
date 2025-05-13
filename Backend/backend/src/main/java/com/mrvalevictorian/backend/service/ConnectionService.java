@@ -93,11 +93,17 @@ public class ConnectionService {
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
         return connectionRepo.findAcceptedConnections(user.getId());
     }
-    public List<Connection> getPendingConnectionsByUser() {
+    public List<Connection> getPendingConnectionsForNotification() {
         String username = jwtService.extractUser(jwtService.getToken());
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
-        return connectionRepo.findPendingConnections(user.getUsername());
+        return connectionRepo.findPendingConnectionsForNotification(user.getUsername());
+    }
+    public List<Connection> getPendingConnectionsForSender() {
+        String username = jwtService.extractUser(jwtService.getToken());
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
+        return connectionRepo.findPendingConnectionsForSender(user.getUsername());
     }
     public Connection getConnectionById(int connectionId) {
         return connectionRepo.findById(connectionId)
