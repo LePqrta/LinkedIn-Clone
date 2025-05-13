@@ -1,6 +1,7 @@
 package com.mrvalevictorian.backend.service;
 
-import com.mrvalevictorian.backend.dto.ProfileEditRequest;
+import com.mrvalevictorian.backend.dto.LocationEditRequest;
+import com.mrvalevictorian.backend.dto.SummaryEditRequest;
 import com.mrvalevictorian.backend.model.Profile;
 import com.mrvalevictorian.backend.repo.ProfileRepo;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,18 @@ public class ProfileService {
         return profileRepo.findProfileByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
     }
-    public void editProfile(ProfileEditRequest profileEditRequest) {
+    public void editSummary(SummaryEditRequest summaryEditRequest) {
         String username = jwtService.extractUser(jwtService.getToken());
         Profile profile = profileRepo.findProfileByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
-        profile.setLocation(profileEditRequest.getLocation());
-        profile.setSummary(profileEditRequest.getSummary());
+        profile.setSummary(summaryEditRequest.getSummary());
+        profileRepo.save(profile);
+    }
+    public void editLocation(LocationEditRequest locationEditRequest) {
+        String username = jwtService.extractUser(jwtService.getToken());
+        Profile profile = profileRepo.findProfileByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+        profile.setSummary(locationEditRequest.getLocation());
         profileRepo.save(profile);
     }
     public Profile getProfileByUsername(String username) {

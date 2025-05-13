@@ -1,7 +1,8 @@
 package com.mrvalevictorian.backend.controller;
 
 
-import com.mrvalevictorian.backend.dto.ProfileEditRequest;
+import com.mrvalevictorian.backend.dto.LocationEditRequest;
+import com.mrvalevictorian.backend.dto.SummaryEditRequest;
 import com.mrvalevictorian.backend.model.Profile;
 import com.mrvalevictorian.backend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,20 @@ public class ProfileController {
         Profile profile = profileService.getProfileByUsername(username);
         return ResponseEntity.ok(profile);
     }
-    @PostMapping("/edit-profile")
-    public ResponseEntity<String> editProfile(@RequestBody ProfileEditRequest profileEditRequest) {
+    @PostMapping("/edit-about")
+    public ResponseEntity<String> editSummary(@RequestBody SummaryEditRequest summaryEditRequest) {
         try {
-            profileService.editProfile(profileEditRequest);
-            return ResponseEntity.ok("Profile updated successfully");
+            profileService.editSummary(summaryEditRequest);
+            return ResponseEntity.ok("About updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error updating profile: " + e.getMessage());
+        }
+    }
+    @PostMapping("/edit-location")
+    public ResponseEntity<String> editLocation(@RequestBody LocationEditRequest locationEditRequest) {
+        try {
+            profileService.editLocation(locationEditRequest);
+            return ResponseEntity.ok("Location updated successfully");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error updating profile: " + e.getMessage());
         }
