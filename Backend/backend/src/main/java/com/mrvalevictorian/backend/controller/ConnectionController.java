@@ -22,7 +22,7 @@ public class ConnectionController {
         try {
             connectionService.sendConnectionRequest(connectionRequest.getUsername());
             return ResponseEntity.ok("Connection sent successfully");
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | ConnectionException e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }

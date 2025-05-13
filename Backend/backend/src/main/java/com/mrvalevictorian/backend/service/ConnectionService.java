@@ -28,6 +28,12 @@ public class ConnectionService {
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
         User receiver = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Receiver not found"));
+        if (sender.getId() == receiver.getId()) {
+            throw new ConnectionException("You cannot send a connection request to yourself");
+        }
+        if (connectionRepo.existsBySenderAndReceiver(sender, receiver)) {
+            throw new ConnectionException("Connection request already sent");
+        }
 
         Connection connection = new Connection();
         connection.setSender(sender);
