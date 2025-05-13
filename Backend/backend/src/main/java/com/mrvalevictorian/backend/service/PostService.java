@@ -77,4 +77,8 @@ public class PostService {
     public Post getPostById(Long id) {
         return postRepo.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
     }
+    public List<Post> getPostsByProfileId(Long profileId)
+    {
+        return postRepo.findPostByProfileId(profileId);
+    }
 }

@@ -46,6 +46,14 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
         }
     }
+    @GetMapping("/get-profile-posts/{profileId}")
+    public List<Post> getPostsByProfileId(@PathVariable Long profileId) {
+        try {
+            return postService.getPostsByProfileId(profileId);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+    }
 
     // to test if the controller is working
     @GetMapping("/test")

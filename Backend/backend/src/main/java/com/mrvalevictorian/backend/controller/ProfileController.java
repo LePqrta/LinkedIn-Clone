@@ -25,7 +25,7 @@ public class ProfileController {
         Profile profile = profileService.getProfileByUsername(username);
         return ResponseEntity.ok(profile);
     }
-    @PostMapping("/edit-about")
+    @PutMapping("/edit-about")
     public ResponseEntity<String> editSummary(@RequestBody SummaryEditRequest summaryEditRequest) {
         try {
             profileService.editSummary(summaryEditRequest);
@@ -34,7 +34,7 @@ public class ProfileController {
             return ResponseEntity.status(500).body("Error updating profile: " + e.getMessage());
         }
     }
-    @PostMapping("/edit-location")
+    @PutMapping("/edit-location")
     public ResponseEntity<String> editLocation(@RequestBody LocationEditRequest locationEditRequest) {
         try {
             profileService.editLocation(locationEditRequest);
