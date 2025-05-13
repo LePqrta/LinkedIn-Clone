@@ -81,4 +81,10 @@ public class PostService {
     {
         return postRepo.findPostByProfileId(profileId);
     }
+    public List<Post> getPostsOfConnections(){
+        String username = jwtService.extractUser(jwtService.getToken());
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return postRepo.findPostsOfConnections(user.getId());
+    }
 }

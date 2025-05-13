@@ -54,4 +54,17 @@ public class JobService {
     public List<Job> getAllJobs(){
         return jobRepo.findAll();
     }
+
+    public List<Job> getAllJobsNotApplied() {
+        String username = jwtService.extractUser(jwtService.getToken());
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Authentication error"));
+        return jobRepo.findJobsNotApplied(user.getId());
+    }
+    public List<Job> getAllJobsApplied() {
+        String username = jwtService.extractUser(jwtService.getToken());
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Authentication error"));
+        return jobRepo.findJobsApplied(user.getId());
+    }
 }

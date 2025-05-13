@@ -54,6 +54,15 @@ public class PostController {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
+    @GetMapping("/get-posts-of-connections")
+    public ResponseEntity<List<Post>> getPostsOfConnections() {
+        try {
+            List<Post> posts = postService.getPostsOfConnections();
+            return ResponseEntity.ok(posts);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
     // to test if the controller is working
     @GetMapping("/test")

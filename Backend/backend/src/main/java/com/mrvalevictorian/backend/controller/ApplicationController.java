@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/application")
@@ -24,6 +25,14 @@ public class ApplicationController {
             return new ResponseEntity<>("Application applied successfully", HttpStatus.OK);
         }catch (IllegalArgumentException | AuthenticationException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/get-applications/{jobId}")
+    public ResponseEntity<?> getApplications(@PathVariable int jobId) {
+        try {
+            return new ResponseEntity<>(applicationService.getApplications(jobId), HttpStatus.OK);
+        } catch (IllegalArgumentException | AuthenticationException e) {
+    return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class ApplicationService {
     private final ApplicationRepo applicationRepo;
     private final JwtService jwtService;
 
-    public void applyJob(ApplicationRequest applicationRequest,int jobId) throws AuthenticationException {
+    public void applyJob(ApplicationRequest applicationRequest, int jobId) throws AuthenticationException {
         if (jobRepo.findById(jobId).isEmpty()) {
             throw new IllegalArgumentException("Job not found");
         }
@@ -42,5 +43,19 @@ public class ApplicationService {
         application.setJob(jobRepo.findById(jobId).get());
         applicationRepo.save(application);
     }
+
+    public List<Application> getApplications(int jobId) throws AuthenticationException {
+        String username = jwtService.extractUser(jwtService.getToken());
+        if (userRepo.findByUsername(username).isEmpty()) {
+            throw new AuthenticationException("Authentication failed");
+        }
+        if (jobRepo.findById(jobId).isEmpty()) {
+            throw new IllegalArgumentException("Job not found");
+        }
+        else if(userRepo.findByUsername(username).get().getId() != jobRepo.findById(jobId).get().getUser().getId()){
+            throw new AuthenticationException("Authorization error");
+        }
+        return applicationRepo.findAllApplicationsForUserJobListing(userRepo.findByUsername(username).get().getId(), jobId);
     }
+}
 

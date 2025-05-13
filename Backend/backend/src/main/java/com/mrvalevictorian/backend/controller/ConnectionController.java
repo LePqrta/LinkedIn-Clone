@@ -89,5 +89,14 @@ public class ConnectionController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+    @GetMapping("/get-my-all-connections")
+    public ResponseEntity<List<Connection>> getAllConnections() {
+        try {
+            List<Connection> connections = connectionService.getAllConnections();
+            return ResponseEntity.ok(connections);
+        } catch (UserNotFoundException _) {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
 }
 

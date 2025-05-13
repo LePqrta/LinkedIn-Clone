@@ -45,4 +45,22 @@ public class JobController {
             return ResponseEntity.status(500).body(null);
         }
     }
+    @GetMapping("/get-jobs-not-applied")
+    public ResponseEntity<List<Job>> getJobsNotApplied() {
+        try {
+            List<Job> jobs = jobService.getAllJobsNotApplied();
+            return ResponseEntity.ok(jobs);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+    @GetMapping("/get-jobs-applied")
+    public  ResponseEntity<List<Job>> getJobsApplied() {
+        try {
+            List<Job> jobs = jobService.getAllJobsApplied();
+            return ResponseEntity.ok(jobs);
+        } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(500).body(null);
+        }
+    }
 }

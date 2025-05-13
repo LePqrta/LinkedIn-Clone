@@ -20,4 +20,6 @@ public interface ConnectionRepo extends JpaRepository<Connection, Integer> {
     List<Connection> findPendingConnectionsForSender(String username);
 
     boolean existsBySenderAndReceiver(User sender, User receiver);
+    @Query("SELECT c FROM Connection c WHERE (c.sender.id = :id OR c.receiver.id = :id) AND c.status = 'ACCEPTED'")
+    List<Connection> findAllConnections(UUID id);
 }
