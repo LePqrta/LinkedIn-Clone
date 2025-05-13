@@ -77,7 +77,9 @@ public class ConnectionService {
     public void removeConnection(int connectionId) {
         Connection connection = connectionRepo.findById(connectionId)
                 .orElseThrow(() -> new RuntimeException("Connection not found"));
-        if(!jwtService.extractUser(jwtService.getToken()).equals(connection.getSender().getUsername())){
+        if(!jwtService.extractUser(jwtService.getToken()).equals(connection.getSender().getUsername())
+                &&
+                !jwtService.extractUser(jwtService.getToken()).equals(connection.getReceiver().getUsername())){
             throw new UserNotFoundException("Authentication failed");
         }
         if(connection.getStatus().equals(StatusEnum.REMOVED)){

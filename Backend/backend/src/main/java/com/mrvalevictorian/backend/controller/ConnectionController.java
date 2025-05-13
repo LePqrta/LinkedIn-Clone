@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/connections")
@@ -18,13 +20,19 @@ public class ConnectionController {
     private final ConnectionService connectionService;
 
     @PostMapping("/send-connection")
-    public ResponseEntity<String> sendConnectionRequest(@RequestBody ConnectionRequest connectionRequest) {
+    public ResponseEntity<Map<String, String>> sendConnectionRequest(@RequestBody ConnectionRequest connectionRequest) {
         try {
             connectionService.sendConnectionRequest(connectionRequest.getUsername());
-            return ResponseEntity.ok("Connection sent successfully");
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Connection sent successfully");
+            return ResponseEntity.ok(response);
+
         } catch (UserNotFoundException | ConnectionException e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(error);
+}
     }
     @PostMapping("/accept-connection")
     public ResponseEntity<String> acceptConnectionRequest(@RequestParam int connectionId) {
@@ -61,6 +69,15 @@ public class ConnectionController {
             return ResponseEntity.ok(connections);
         } catch (UserNotFoundException _) {
             return ResponseEntity.status(404).body(null);
+        }
+    }
+    @DeleteMapping("/remove-connection/{connectionId}")
+    public ResponseEntity<String> deleteConnection(@PathVariable int connectionId) {
+        try {
+            connectionService.removeConnection(connectionId);
+            return ResponseEntity.ok("Connection deleted successfully");
+        } catch (UserNotFoundException | ConnectionException e) {
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 }
