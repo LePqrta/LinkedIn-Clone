@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/experiences")
@@ -18,9 +20,13 @@ public class ExperienceController {
     private final ExperienceService experienceService;
 
     @PostMapping("/create-experience")
-    public ResponseEntity<String> createExperience(@RequestBody ExperienceRequest experienceRequest) {
+    public ResponseEntity<Map<String, String>> createExperience(@RequestBody ExperienceRequest experienceRequest) {
         experienceService.createExperience(experienceRequest);
-        return ResponseEntity.ok("Experience created successfully");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Experience created successfully");
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete-experience/{experienceId}")

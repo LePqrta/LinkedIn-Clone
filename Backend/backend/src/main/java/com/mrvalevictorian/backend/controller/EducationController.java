@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/education")
@@ -18,9 +20,13 @@ public class EducationController {
     private final EducationService educationService;
 
     @PostMapping("/create-education")
-    public ResponseEntity<String> createEducation(@RequestBody EducationRequest educationRequest) {
+    public ResponseEntity<Map<String, String>> createEducation(@RequestBody EducationRequest educationRequest) {
         educationService.createEducation(educationRequest);
-        return ResponseEntity.ok("Education entry created successfully");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Education entry created successfully");
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete-education/{educationId}")
