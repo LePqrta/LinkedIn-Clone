@@ -75,4 +75,6 @@ public class PostController {
         return postService.getAllPosts();
     }
 
+    // Admin post delete
+
 }

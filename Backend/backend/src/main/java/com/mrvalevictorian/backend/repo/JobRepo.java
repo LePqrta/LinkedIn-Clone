@@ -13,9 +13,8 @@ import java.util.UUID;
 public interface JobRepo extends JpaRepository<Job, Integer> {
     Optional<Object> findByTitle(String title);
 
-    @Query("SELECT j FROM Job j WHERE j.jobId NOT IN (SELECT a.job.jobId FROM Application a WHERE a.user.id = :userId)")
+   @Query("SELECT j FROM Job j WHERE j.jobId NOT IN (SELECT a.job.jobId FROM Application a WHERE a.user.id = :userId) AND j.user.id <> :userId")
     List<Job> findJobsNotApplied(@Param("userId") UUID userId);
-
     @Query("SELECT j FROM Job j WHERE j.jobId IN (SELECT a.job.jobId FROM Application a WHERE a.user.id = :userId)")
     List<Job> findJobsApplied(@Param("userId") UUID userId);
 

@@ -35,4 +35,13 @@ public class ApplicationController {
     return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+    @DeleteMapping("/delete-application/{applicationId}")
+    public ResponseEntity<String> deleteApplication(@PathVariable int applicationId) {
+        try {
+            applicationService.deleteApplication(applicationId);
+            return new ResponseEntity<>("Application deleted successfully", HttpStatus.OK);
+        } catch (IllegalArgumentException | AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

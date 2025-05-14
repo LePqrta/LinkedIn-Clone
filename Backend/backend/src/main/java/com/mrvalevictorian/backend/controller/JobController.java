@@ -72,4 +72,5 @@ public class JobController {
             return ResponseEntity.status(500).body(null);
         }
     }
+    //admin job delete
 }

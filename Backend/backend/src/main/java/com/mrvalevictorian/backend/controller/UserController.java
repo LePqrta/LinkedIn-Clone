@@ -25,4 +25,5 @@ public class UserController {
         public List<User> findAllUsersWithoutConnection() {
             return userService.getAllUsersWithoutConnection();
         }
+        // Admin user delete
 }

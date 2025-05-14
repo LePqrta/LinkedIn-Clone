@@ -57,5 +57,17 @@ public class ApplicationService {
         }
         return applicationRepo.findAllApplicationsForUserJobListing(userRepo.findByUsername(username).get().getId(), jobId);
     }
+    public void deleteApplication(int applicationId) throws AuthenticationException {
+        String username = jwtService.extractUser(jwtService.getToken());
+        if (userRepo.findByUsername(username).isEmpty()) {
+            throw new AuthenticationException("Authentication failed");
+        }
+        Application application = applicationRepo.findById(applicationId)
+                .orElseThrow(() -> new IllegalArgumentException("Application not found"));
+        if (application.getUser().getId() != userRepo.findByUsername(username).get().getId()) {
+            throw new AuthenticationException("Authorization error");
+        }
+        applicationRepo.delete(application);
+    }
 }
 
