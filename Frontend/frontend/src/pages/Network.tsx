@@ -24,6 +24,8 @@ const Network = () => {
   const [people, setPeople] = useState<any[]>([]);
   const [pendingInvitations, setPendingInvitations] = useState<any[]>([]);
   const [requestSent, setRequestSent] = useState<{ [username: string]: boolean }>({});
+  const [loadingAccept, setLoadingAccept] = useState<{ [id: number]: boolean }>({});
+  const [loadingReject, setLoadingReject] = useState<{ [id: number]: boolean }>({});
 
   useEffect(() => {
     const fetchPeople = async () => {
@@ -45,7 +47,11 @@ const Network = () => {
         const response = await axios.get('http://localhost:8080/connections/pending-connections', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setPendingInvitations(Array.isArray(response.data) ? response.data.slice(0, 6) : []);
+        // Map connectionId to id for frontend usage
+        const invitations = Array.isArray(response.data)
+          ? response.data.slice(0, 6).map(inv => ({ ...inv, id: inv.connectionId }))
+          : [];
+        setPendingInvitations(invitations);
       } catch (err) {
         setPendingInvitations([]);
       }
@@ -65,6 +71,40 @@ const Network = () => {
       );
     } catch (err) {
       // Optionally handle error, revert button if needed
+    }
+  };
+
+  const handleAccept = async (connectionId: number) => {
+    setLoadingAccept((prev) => ({ ...prev, [connectionId]: true }));
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `http://localhost:8080/connections/accept-connection?connectionId=${connectionId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setPendingInvitations((prev) => prev.filter(inv => inv.id !== connectionId));
+    } catch (err) {
+      // Optionally handle error
+    } finally {
+      setLoadingAccept((prev) => ({ ...prev, [connectionId]: false }));
+    }
+  };
+
+  const handleReject = async (connectionId: number) => {
+    setLoadingReject((prev) => ({ ...prev, [connectionId]: true }));
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `http://localhost:8080/connections/reject-connection?connectionId=${connectionId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setPendingInvitations((prev) => prev.filter(inv => inv.id !== connectionId));
+    } catch (err) {
+      // Optionally handle error
+    } finally {
+      setLoadingReject((prev) => ({ ...prev, [connectionId]: false }));
     }
   };
 
@@ -104,17 +144,19 @@ const Network = () => {
                           size="small"
                           startIcon={<CheckIcon />}
                           sx={{ mr: 1 }}
-                          disabled
+                          disabled={loadingAccept[invitation.id]}
+                          onClick={() => handleAccept(invitation.id)}
                         >
-                          Accept
+                          {loadingAccept[invitation.id] ? 'Accepting...' : 'Accept'}
                         </Button>
                         <Button
                           variant="outlined"
                           size="small"
                           startIcon={<CloseIcon />}
-                          disabled
+                          disabled={loadingReject[invitation.id]}
+                          onClick={() => handleReject(invitation.id)}
                         >
-                          Ignore
+                          {loadingReject[invitation.id] ? 'Ignoring...' : 'Ignore'}
                         </Button>
                       </Box>
                     </ListItem>
