@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.AuthRequest;
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
 import com.mrvalevictorian.backend.model.User;
+import com.mrvalevictorian.backend.repo.UserRepo;
 import com.mrvalevictorian.backend.service.AuthService;
 import com.mrvalevictorian.backend.service.JwtService;
 import com.mrvalevictorian.backend.service.UserService;
@@ -25,7 +26,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
     private final JwtService jwtService;
-
+    private final UserRepo userRepo;
     private final AuthenticationManager authenticationManager;
 
 
@@ -71,4 +72,12 @@ public class AuthController {
             return "Invalid or expired token.";
         }
     }
+    @GetMapping("/test")
+    public User returnUser() {
+        String username = jwtService.extractUser(jwtService.getToken());
+        // find the user by username, if exists, set the user, if not, throw an exception
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return user;
+}
 }
