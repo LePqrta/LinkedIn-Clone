@@ -2,6 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.AuthRequest;
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
+import com.mrvalevictorian.backend.exceptions.UserNotFoundException;
 import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import com.mrvalevictorian.backend.service.AuthService;
@@ -43,22 +44,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> generateToken(@RequestBody AuthRequest request) {
         try {
-            User user = userService.getByUsername(request.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı"));
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-            if (authentication.isAuthenticated()) {
-                String token = jwtService.generateToken(request.getUsername());
-                Map<String, String> response = new HashMap<>();
-                response.put("token", token);
-                response.put("name", user.getName());
-                response.put("surname", user.getSurname());
-                return ResponseEntity.ok(response);
-            }
-            throw new UsernameNotFoundException("Username can not be found or the password is incorrect");
+            Map<String, String> map = new HashMap<>();
+            map=authService.login(request);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-                    Map.of("error", "Authentication failed: " + e.getMessage()));
+                    Map.of("error", e.getMessage()));
         }
     }//postman scriptinin çalışması için json olarak alıyorum outputu.
     //generateToken'ı login yaptım içinde script'e bak script orada

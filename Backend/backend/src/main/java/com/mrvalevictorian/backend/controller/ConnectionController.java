@@ -98,5 +98,14 @@ public class ConnectionController {
             return ResponseEntity.status(404).body(null);
         }
     }
+    @GetMapping("/get-connections-of-user/{username}")
+    public ResponseEntity<List<Connection>> getConnectionsOfUser(@PathVariable String username) {
+        try {
+            List<Connection> connections = connectionService.getConnectionsByUsername(username);
+            return ResponseEntity.ok(connections);
+        } catch (UserNotFoundException _) {
+            return ResponseEntity.status(404).body(null);
+        }
+    }
 }
 

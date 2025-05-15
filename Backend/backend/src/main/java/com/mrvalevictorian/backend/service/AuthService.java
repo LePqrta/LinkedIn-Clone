@@ -1,5 +1,6 @@
 package com.mrvalevictorian.backend.service;
 
+import com.mrvalevictorian.backend.dto.AuthRequest;
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
 import com.mrvalevictorian.backend.enums.RoleEnum;
 import com.mrvalevictorian.backend.model.Profile;
@@ -7,6 +8,11 @@ import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.repo.ProfileRepo;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +28,10 @@ public class AuthService {
     private final UserRepo userRepository;
     private final Map<String, User> tokenStorage = new HashMap<>();
     private final EmailService emailService;
+    private final UserService userService;
+    private final JwtService jwtService;
     private final ProfileRepo profileRepo;
+    private final AuthenticationManager authenticationManager;
 
     public void createUser(CreateUserRequest request) {
         userRepository.findByUsername(request.getUsername())
@@ -59,7 +68,21 @@ public class AuthService {
 //            throw new RuntimeException("Failed to send verification email", e);
 //        }
     }
-
+    public Map<String, String> login(AuthRequest request){
+        User user = userService.getByUsername(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı"));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        if (authentication.isAuthenticated()) {
+            String token = jwtService.generateToken(request.getUsername());
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("name", user.getName());
+            response.put("surname", user.getSurname());
+            return response;
+        }
+        throw new UsernameNotFoundException("Username can not be found or the password is incorrect");
+    }
     public String createVerificationToken(User user) {
         // Benzersiz bir token oluştur
         String token = UUID.randomUUID().toString();

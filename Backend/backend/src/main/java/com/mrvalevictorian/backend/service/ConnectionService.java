@@ -115,4 +115,7 @@ public class ConnectionService {
         return connectionRepo.findById(connectionId)
                 .orElseThrow(() -> new RuntimeException("Connection not found"));
     }
+    public List<Connection> getConnectionsByUsername(String username) {
+        return connectionRepo.findConnectionsByUsername(username);
+    }
 }
