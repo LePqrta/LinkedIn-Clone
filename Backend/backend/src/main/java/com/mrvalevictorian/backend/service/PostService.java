@@ -53,6 +53,14 @@ public class PostService {
         // Post bulundu ve yetki kontrolü geçtiyse sil
         postRepo.delete(post);
     }
+    public void deletePostAdmin(Long postId) {
+        // Post'un varlığını kontrol et
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post with ID " + postId + " not found"));
+
+        // Post bulundu ve yetki kontrolü geçtiyse sil
+        postRepo.delete(post);
+    }
     public void editPost(Long postId, String newContent) {
         // Post'un varlığını kontrol et
         Post post = postRepo.findById(postId)

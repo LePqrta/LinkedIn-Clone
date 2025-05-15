@@ -18,4 +18,5 @@ public interface UserRepo extends JpaRepository<User, Long> {
         "SELECT CASE WHEN c.sender.id = :myId THEN c.receiver.id ELSE c.sender.id END " +
         "FROM Connection c WHERE (c.sender.id = :myId OR c.receiver.id = :myId) AND c.status = 'ACCEPTED' or c.status = 'PENDING')")
     List<User> findAllUsersWithoutConnection(@Param("myId") UUID myId);
+    Optional<User> findById(UUID id);
 }

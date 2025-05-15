@@ -51,6 +51,11 @@ public class JobService {
         }
         jobRepo.delete(job);
     }
+    public void deleteJobAdmin(int jobId) {
+        Job job = jobRepo.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+        jobRepo.delete(job);
+    }
     public List<Job> getAllJobs(){
         return jobRepo.findAll();
     }

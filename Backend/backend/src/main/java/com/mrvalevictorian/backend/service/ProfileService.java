@@ -29,7 +29,7 @@ public class ProfileService {
         String username = jwtService.extractUser(jwtService.getToken());
         Profile profile = profileRepo.findProfileByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
-        profile.setSummary(locationEditRequest.getLocation());
+        profile.setLocation(locationEditRequest.getLocation());
         profileRepo.save(profile);
     }
     public Profile getProfileByUsername(String username) {
