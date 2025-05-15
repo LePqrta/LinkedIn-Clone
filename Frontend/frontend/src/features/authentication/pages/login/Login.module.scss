@@ -1,0 +1,35 @@
+.root {
+    .logo {
+        width: 7rem;
+    }
+
+    main {
+        padding: 0 4rem;
+    }
+
+    form {
+        margin-top: 1rem;
+    }
+
+    .register {
+        text-align: center;
+    }
+
+    .error {
+        color: #d93025;
+        background-color: #fce8e6;
+        padding: 12px 16px;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        border: 1px solid rgba(217, 48, 37, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &::before {
+            content: "⚠️";
+            font-size: 1.1rem;
+        }
+    }
+}

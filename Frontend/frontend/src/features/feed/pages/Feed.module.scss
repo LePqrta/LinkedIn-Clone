@@ -1,0 +1,156 @@
+.root {
+  min-height: 100vh;
+  background-color: #f3f2ef;
+  padding-top: 72px; // Increased for more space below navbar
+  display: flex;
+  flex-direction: column;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-inline: 2rem;
+    max-width: 74rem;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1; // Added to allow content to grow
+  }
+
+  .header {
+    height: 4rem;
+    border-radius: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+
+    .userInfo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .profileLink {
+      color: var(--primary-color);
+      font-weight: 600;
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .left,
+  .right,
+  .posting,
+  .feed {
+    background-color: white;
+    border-radius: 1rem;
+    border: 1px solid #e0e0e0;
+  }
+
+  .center{
+    width: 100%;
+    max-width: 600px;
+  }
+  @media screen and (min-width: 1135px) { // Fixed media query
+    .content{
+        grid-template-columns: 15rem 1fr 18rem;
+        grid-template-rows: auto;
+    }
+    .left {
+        height: 30rem;
+    }
+    .right {
+        height: 20rem;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .root {
+      padding-top: 64px; // Increased for more space below navbar on mobile
+    }
+  }
+}
+
+/* Add fancy styles for the add post section (the posting div) */
+.posting {
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 20px;
+  form {
+    display: flex;
+    gap: 12px;
+    input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #f0f0f0;
+      transition: box-shadow 0.2s, background 0.2s;
+      outline: none;
+      &:focus {
+         box-shadow: 0 0 0 2px #0a66c2;
+         background: #fff;
+      }
+    }
+    button {
+       padding: 10px 20px;
+       background: #0a66c2;
+       color: white;
+       border: none;
+       border-radius: 6px;
+       font-weight: bold;
+       cursor: pointer;
+       transition: background 0.2s;
+       &:hover {
+          background: #0a5aa0;
+       }
+    }
+  }
+}
+
+.footerContainer {
+    max-width: 1128px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: auto; // Added to push footer to bottom when content is short
+    
+    li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 0.8rem;
+
+        img {
+            height: 1.2rem;
+            width: auto;
+        }
+
+        a {
+            color: rgba(0, 0, 0, 0.6);
+            text-decoration: none;
+            transition: color 0.2s ease;
+
+            &:hover {
+                color: rgba(0, 0, 0, 0.9);
+                text-decoration: underline;
+            }
+        }
+    }
+}
