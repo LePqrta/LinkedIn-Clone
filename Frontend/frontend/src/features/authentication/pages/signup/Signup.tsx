@@ -48,7 +48,7 @@ export function Signup() {
                     <Input type="text" id="name" label="Name"/>
                     <Input type="text" id="surname" label="Surname"/>
                     <Input type="text" id="username" label="Username"/>
-                    <Input type="text" id="email" label="Email"/>
+                    <Input type="email" id="email" label="Email"/>
                     <Input type="password" id="password" label="Password"/>
                     {errorMessage && <p className={classes.error}>{errorMessage}</p>}
                     <p className={classes.disclaimer}>

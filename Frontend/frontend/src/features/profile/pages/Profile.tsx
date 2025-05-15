@@ -246,10 +246,10 @@ export function Profile() {
     };
 
     const fetchPendingConnections = async () => {
-        if (!username || !auth?.user?.username) return;
+        if (!auth?.user?.username) return;
         
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/connections/pending-connections-sender`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/connections/pending-connections`, {
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem("token")}`,
                     "Accept": "application/json"
@@ -822,8 +822,8 @@ export function Profile() {
     };
 
     const isConnected = connections.some(conn => 
-        conn.sender.username === auth?.user?.username || 
-        conn.receiver.username === auth?.user?.username
+        (conn.sender.username === username && conn.receiver.username === auth?.user?.username) || 
+        (conn.sender.username === auth?.user?.username && conn.receiver.username === username)
     );
 
     const isPending = pendingConnections.some(conn => 
@@ -1081,6 +1081,7 @@ export function Profile() {
                                 ) : (
                                     <div className={classes.connectionsList}>
                                         {connections.map((connection) => {
+                                            // Get the other user (not the profile owner)
                                             const connectedUser = connection.sender.username === username 
                                                 ? connection.receiver 
                                                 : connection.sender;

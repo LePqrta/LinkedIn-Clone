@@ -18,8 +18,8 @@ public interface PostRepo extends JpaRepository<Post, Long> {
     @Query("SELECT po FROM Profile p JOIN Post po ON p.user = po.user WHERE p.profileId = :profileId")
     List<Post> findPostByProfileId(@Param("profileId") Long profileId);
 
-    @Query("SELECT po FROM Post po WHERE po.user.id IN (" +
-               "SELECT CASE WHEN c.sender.id = :userId THEN c.receiver.id ELSE c.sender.id END " +
-               "FROM Connection c WHERE c.status='ACCEPTED' and c.sender.id = :userId OR c.receiver.id = :userId)")
-        List<Post> findPostsOfConnections(@Param("userId") UUID userId);
+@Query("SELECT po FROM Post po WHERE po.user.id IN (" +
+       "SELECT CASE WHEN c.sender.id = :userId THEN c.receiver.id ELSE c.sender.id END " +
+       "FROM Connection c WHERE c.status='ACCEPTED' AND (c.sender.id = :userId OR c.receiver.id = :userId))")
+List<Post> findPostsOfConnections(@Param("userId") UUID userId);
 }

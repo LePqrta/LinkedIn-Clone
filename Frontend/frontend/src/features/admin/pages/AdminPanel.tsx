@@ -19,19 +19,31 @@ interface User {
 }
 
 interface Post {
-    id: number;
+    postId: number;
+    user: {
+        id: string;
+        username: string;
+        email: string;
+        name: string | null;
+        surname: string | null;
+        role: string;
+    };
     content: string;
-    userId: string;
-    username: string;
     createdAt: string;
 }
 
 interface Job {
-    id: number;
+    jobId: number;
     title: string;
     description: string;
-    company: string;
+    companyName: string;
     location: string;
+    user: {
+        id: string;
+        username: string;
+        // ... other user fields
+    };
+    postedAt: string;
 }
 
 interface NewAdminData {
@@ -80,7 +92,7 @@ export function AdminPanel() {
         const searchLower = searchTerm.toLowerCase();
         return (
             (post.content?.toLowerCase() || '').includes(searchLower) ||
-            (post.username?.toLowerCase() || '').includes(searchLower)
+            (post.user.username?.toLowerCase() || '').includes(searchLower)
         );
     });
 
@@ -89,7 +101,7 @@ export function AdminPanel() {
         const searchLower = searchTerm.toLowerCase();
         return (
             (job.title?.toLowerCase() || '').includes(searchLower) ||
-            (job.company?.toLowerCase() || '').includes(searchLower) ||
+            (job.companyName?.toLowerCase() || '').includes(searchLower) ||
             (job.location?.toLowerCase() || '').includes(searchLower) ||
             (job.description?.toLowerCase() || '').includes(searchLower)
         );
@@ -181,7 +193,7 @@ export function AdminPanel() {
                 },
             });
             if (!response.ok) throw new Error('Failed to delete post');
-            setPosts(posts.filter(post => post.id !== postId));
+            setPosts(posts.filter(post => post.postId !== postId));
             setSuccessMessage('Post deleted successfully');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to delete post');
@@ -199,7 +211,7 @@ export function AdminPanel() {
                 },
             });
             if (!response.ok) throw new Error('Failed to delete job');
-            setJobs(jobs.filter(job => job.id !== jobId));
+            setJobs(jobs.filter(job => job.jobId !== jobId));
             setSuccessMessage('Job deleted successfully');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to delete job');
@@ -346,20 +358,22 @@ export function AdminPanel() {
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Content</th>
-                                                <th>User</th>
+                                                <th>Author</th>
+                                                <th>Author Email</th>
                                                 <th>Created At</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {filteredPosts.map(post => (
-                                                <tr key={post.id}>
-                                                    <td>{post.id}</td>
+                                                <tr key={post.postId}>
+                                                    <td>{post.postId}</td>
                                                     <td>{post.content}</td>
-                                                    <td>{post.username}</td>
+                                                    <td>{post.user.name ? `${post.user.name} ${post.user.surname || ''}` : post.user.username}</td>
+                                                    <td>{post.user.email}</td>
                                                     <td>{new Date(post.createdAt).toLocaleString()}</td>
                                                     <td>
-                                                        <Button onClick={() => deletePost(post.id)}>Delete</Button>
+                                                        <Button onClick={() => deletePost(post.postId)}>Delete</Button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -378,19 +392,23 @@ export function AdminPanel() {
                                                 <th>Company</th>
                                                 <th>Location</th>
                                                 <th>Description</th>
+                                                <th>Posted By</th>
+                                                <th>Posted At</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {filteredJobs.map(job => (
-                                                <tr key={job.id}>
-                                                    <td>{job.id}</td>
+                                                <tr key={job.jobId}>
+                                                    <td>{job.jobId}</td>
                                                     <td>{job.title}</td>
-                                                    <td>{job.company}</td>
+                                                    <td>{job.companyName}</td>
                                                     <td>{job.location}</td>
                                                     <td>{job.description}</td>
+                                                    <td>{job.user.username}</td>
+                                                    <td>{new Date(job.postedAt).toLocaleString()}</td>
                                                     <td>
-                                                        <Button onClick={() => deleteJob(job.id)}>Delete</Button>
+                                                        <Button onClick={() => deleteJob(job.jobId)}>Delete</Button>
                                                     </td>
                                                 </tr>
                                             ))}

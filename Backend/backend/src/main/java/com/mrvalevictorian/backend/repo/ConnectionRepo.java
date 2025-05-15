@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public interface ConnectionRepo extends JpaRepository<Connection, Integer> {
 
-    @Query("SELECT c FROM Connection c WHERE c.sender.id= :senderId OR c.receiver.id=:senderId AND c.status = 'ACCEPTED'")
+    @Query("SELECT c FROM Connection c WHERE (c.sender.id= :senderId OR c.receiver.id=:senderId) AND c.status = 'ACCEPTED'")
     List<Connection> findAcceptedConnections(UUID senderId);
 
-    @Query("SELECT c FROM Connection c WHERE c.sender.username = :username OR c.receiver.username = :username AND c.status = 'ACCEPTED'")
+    @Query("SELECT c FROM Connection c WHERE (c.sender.username = :username OR c.receiver.username = :username) AND c.status = 'ACCEPTED'")
     List<Connection> findConnectionsByUsername(String username);
 
     @Query("SELECT c FROM Connection c WHERE c.receiver.username = :username AND c.status = 'PENDING'")
