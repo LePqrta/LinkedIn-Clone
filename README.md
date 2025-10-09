@@ -1,223 +1,49 @@
-Currently there is no centerilized database so the PostgresSQL is given below:
+# LinkedIn Clone
 
-"
-BEGIN;
+A full-stack social media application that replicates core LinkedIn functionality, built with modern web technologies.
 
+## 🚀 Overview
 
-CREATE TABLE IF NOT EXISTS public.applications
-(
-    application_id serial NOT NULL,
-    job_id integer,
-    user_id uuid,
-    resume_url text COLLATE pg_catalog."default",
-    applied_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    cover_letter text COLLATE pg_catalog."default",
-    CONSTRAINT applications_pkey PRIMARY KEY (application_id)
-);
+This project is a comprehensive clone of LinkedIn's user interface and functionality, demonstrating proficiency in full-stack development with TypeScript, Java, and modern web technologies. The application features a responsive design and implements key social networking features.
 
-CREATE TABLE IF NOT EXISTS public.comments
-(
-    comment_id serial NOT NULL,
-    post_id integer,
-    user_id uuid,
-    content text COLLATE pg_catalog."default" NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT comments_pkey PRIMARY KEY (comment_id)
-);
+## 🛠️ Technologies Used
 
-CREATE TABLE IF NOT EXISTS public.connections
-(
-    connection_id serial NOT NULL,
-    sender_id uuid,
-    receiver_id uuid,
-    status character varying(20) COLLATE pg_catalog."default" DEFAULT 'pending'::character varying,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT connections_pkey PRIMARY KEY (connection_id)
-);
+### Frontend
+- **TypeScript** (57.2%) - Type-safe JavaScript for robust frontend development
+- **SCSS** (13.1%) - Advanced CSS with variables, mixins, and nested rules
+- Modern web frameworks and libraries
 
-CREATE TABLE IF NOT EXISTS public.education
-(
-    education_id serial NOT NULL,
-    profile_id integer,
-    institution_name character varying(255) COLLATE pg_catalog."default",
-    degree character varying(100) COLLATE pg_catalog."default",
-    field_of_study character varying(100) COLLATE pg_catalog."default",
-    start_date date,
-    end_date date,
-    CONSTRAINT education_pkey PRIMARY KEY (education_id)
-);
+### Backend
+- **Java** (29.4%) - Server-side application logic and API development
+- RESTful API architecture
+- Database integration
 
-CREATE TABLE IF NOT EXISTS public.experience
-(
-    experience_id serial NOT NULL,
-    profile_id integer,
-    company_name character varying(255) COLLATE pg_catalog."default",
-    job_title character varying(100) COLLATE pg_catalog."default",
-    start_date date,
-    end_date date,
-    description text COLLATE pg_catalog."default",
-    CONSTRAINT experience_pkey PRIMARY KEY (experience_id)
-);
+### Development Tools
+- Node.js ecosystem
+- Build tools and bundlers
+- Version control with Git
 
-CREATE TABLE IF NOT EXISTS public.jobs
-(
-    job_id serial NOT NULL,
-    company_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    title character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    description text COLLATE pg_catalog."default",
-    location character varying(100) COLLATE pg_catalog."default",
-    posted_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    user_id uuid NOT NULL,
-    CONSTRAINT jobs_pkey PRIMARY KEY (job_id)
-);
+## ✨ Features
 
-CREATE TABLE IF NOT EXISTS public.likes
-(
-    like_id serial NOT NULL,
-    post_id integer,
-    user_id uuid,
-    CONSTRAINT likes_pkey PRIMARY KEY (like_id)
-);
+- **User Authentication** - Secure login and registration system
+- **Profile Management** - User profiles with professional information
+- **Social Feed** - Post creation, sharing, and interaction
+- **Networking** - Connect with other professionals
+- **Responsive Design** - Mobile-first approach for all devices
+- **Real-time Updates** - Dynamic content loading and updates
 
-CREATE TABLE IF NOT EXISTS public.posts
-(
-    post_id serial NOT NULL,
-    user_id uuid,
-    content text COLLATE pg_catalog."default" NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT posts_pkey PRIMARY KEY (post_id)
-);
+## 🎯 Key Accomplishments
 
-CREATE TABLE IF NOT EXISTS public.profiles
-(
-    profile_id serial NOT NULL,
-    user_id uuid,
-    location character varying(100) COLLATE pg_catalog."default",
-    summary text COLLATE pg_catalog."default",
-    CONSTRAINT profiles_pkey PRIMARY KEY (profile_id)
-);
+- Implemented a full-stack social media platform from scratch
+- Demonstrated proficiency in TypeScript for type-safe development
+- Built scalable backend services using Java
+- Created responsive and modern UI with SCSS
+- Integrated frontend and backend for seamless user experience
 
-CREATE TABLE IF NOT EXISTS public.skills
-(
-    skill_id serial NOT NULL,
-    profile_id integer,
-    skill_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT skills_pkey PRIMARY KEY (skill_id),
-    CONSTRAINT skills_profile_id_skill_name_key UNIQUE (profile_id, skill_name)
-);
+## 💼 Skills Demonstrated
 
-CREATE TABLE IF NOT EXISTS public.users
-(
-    user_id uuid NOT NULL DEFAULT uuid_generate_v4(),
-    username character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    email character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    password_hash character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    role character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    name character varying(255) COLLATE pg_catalog."default",
-    surname character varying(255) COLLATE pg_catalog."default",
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT users_pkey PRIMARY KEY (user_id),
-    CONSTRAINT users_email_key UNIQUE (email),
-    CONSTRAINT users_username_key UNIQUE (username)
-);
-
-ALTER TABLE IF EXISTS public.applications
-    ADD CONSTRAINT applications_job_id_fkey FOREIGN KEY (job_id)
-    REFERENCES public.jobs (job_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.applications
-    ADD CONSTRAINT applications_user_id_fkey FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.comments
-    ADD CONSTRAINT comments_post_id_fkey FOREIGN KEY (post_id)
-    REFERENCES public.posts (post_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.comments
-    ADD CONSTRAINT comments_user_id_fkey FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.connections
-    ADD CONSTRAINT connections_receiver_id_fkey FOREIGN KEY (receiver_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.connections
-    ADD CONSTRAINT connections_sender_id_fkey FOREIGN KEY (sender_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.education
-    ADD CONSTRAINT education_profile_id_fkey FOREIGN KEY (profile_id)
-    REFERENCES public.profiles (profile_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.experience
-    ADD CONSTRAINT experience_profile_id_fkey FOREIGN KEY (profile_id)
-    REFERENCES public.profiles (profile_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.jobs
-    ADD CONSTRAINT fk_connections_user FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
-
-
-ALTER TABLE IF EXISTS public.likes
-    ADD CONSTRAINT likes_post_id_fkey FOREIGN KEY (post_id)
-    REFERENCES public.posts (post_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.likes
-    ADD CONSTRAINT likes_user_id_fkey FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.posts
-    ADD CONSTRAINT posts_user_id_fkey FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.profiles
-    ADD CONSTRAINT profiles_user_id_fkey FOREIGN KEY (user_id)
-    REFERENCES public.users (user_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public.skills
-    ADD CONSTRAINT skills_profile_id_fkey FOREIGN KEY (profile_id)
-    REFERENCES public.profiles (profile_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE CASCADE;
-
-END;
-"
+- **Frontend Development**: TypeScript, SCSS, Responsive Design
+- **Backend Development**: Java, API Design, Database Management
+- **Full-Stack Integration**: Connecting frontend and backend services
+- **Version Control**: Git workflow and collaboration
+- **Problem Solving**: Implementing complex social media features
