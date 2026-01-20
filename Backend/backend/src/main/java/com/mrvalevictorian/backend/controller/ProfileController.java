@@ -27,20 +27,12 @@ public class ProfileController {
     }
     @PutMapping("/edit-about")
     public ResponseEntity<String> editSummary(@RequestBody SummaryEditRequest summaryEditRequest) {
-        try {
-            profileService.editSummary(summaryEditRequest);
-            return ResponseEntity.ok("About updated successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error updating profile: " + e.getMessage());
-        }
+        profileService.editSummary(summaryEditRequest);
+        return ResponseEntity.ok("About updated successfully");
     }
     @PutMapping("/edit-location")
     public ResponseEntity<String> editLocation(@RequestBody LocationEditRequest locationEditRequest) {
-        try {
-            profileService.editLocation(locationEditRequest);
-            return ResponseEntity.ok("Location updated successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error updating profile: " + e.getMessage());
-        }
+        profileService.editLocation(locationEditRequest);
+        return ResponseEntity.ok("Location updated successfully");
     }
 }

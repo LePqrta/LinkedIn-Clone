@@ -14,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -22,31 +21,21 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final UserService userService;
     private final JwtService jwtService;
     private final UserRepo userRepo;
-    private final AuthenticationManager authenticationManager;
 
 
     @PostMapping("/register")
     public ResponseEntity<String> addUser(@RequestBody CreateUserRequest request) {
-        try {
-            authService.createUser(request);
+        authService.createUser(request);
 
-            return new ResponseEntity<>("User created successfully", HttpStatus.OK);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return new ResponseEntity<>("User created successfully", HttpStatus.OK);
     }
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> generateToken(@RequestBody AuthRequest request) {
-        try {
-            var map=authService.login(request);
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-                    Map.of("error", e.getMessage()));
-        }
+        var map = authService.login(request);
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }//postman scriptinin çalışması için json olarak alıyorum outputu.
     //generateToken'ı login yaptım içinde script'e bak script orada
 

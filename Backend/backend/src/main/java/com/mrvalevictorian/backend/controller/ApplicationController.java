@@ -19,29 +19,17 @@ public class ApplicationController {
 
     @PostMapping("/apply/{jobId}")
     public ResponseEntity<String> applyJob(@RequestBody ApplicationRequest applicationRequest,
-                                           @PathVariable int jobId)  {
-        try{
-            applicationService.applyJob(applicationRequest, jobId);
-            return new ResponseEntity<>("Application applied successfully", HttpStatus.OK);
-        }catch (IllegalArgumentException | AuthenticationException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+                                           @PathVariable int jobId) throws AuthenticationException {
+        applicationService.applyJob(applicationRequest, jobId);
+        return new ResponseEntity<>("Application applied successfully", HttpStatus.OK);
     }
     @GetMapping("/get-applications/{jobId}")
-    public ResponseEntity<?> getApplications(@PathVariable int jobId) {
-        try {
-            return new ResponseEntity<>(applicationService.getApplications(jobId), HttpStatus.OK);
-        } catch (IllegalArgumentException | AuthenticationException e) {
-    return ResponseEntity.status(500).body(e.getMessage());
-        }
+    public ResponseEntity<?> getApplications(@PathVariable int jobId) throws AuthenticationException {
+        return new ResponseEntity<>(applicationService.getApplications(jobId), HttpStatus.OK);
     }
     @DeleteMapping("/delete-application/{applicationId}")
-    public ResponseEntity<String> deleteApplication(@PathVariable int applicationId) {
-        try {
-            applicationService.deleteApplication(applicationId);
-            return new ResponseEntity<>("Application deleted successfully", HttpStatus.OK);
-        } catch (IllegalArgumentException | AuthenticationException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> deleteApplication(@PathVariable int applicationId) throws AuthenticationException {
+        applicationService.deleteApplication(applicationId);
+        return new ResponseEntity<>("Application deleted successfully", HttpStatus.OK);
     }
 }

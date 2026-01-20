@@ -1,8 +1,6 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.CommentRequest;
-import com.mrvalevictorian.backend.exceptions.PostContentEmptyException;
-import com.mrvalevictorian.backend.exceptions.UserNotFoundException;
 import com.mrvalevictorian.backend.model.Comment;
 import com.mrvalevictorian.backend.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -30,24 +28,14 @@ public class CommentController {
     // Example method
     @PostMapping("/create-comment")
     public ResponseEntity<String> createComment(@RequestBody CommentRequest commentRequest) {
-        try {
-            commentService.createComment(commentRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Comment created successfully");
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found: " + e.getMessage());
-        } catch (PostContentEmptyException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid content: " + e.getMessage());
-        }
+        commentService.createComment(commentRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Comment created successfully");
     }
 
     @DeleteMapping("/delete-comment/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
-        try {
-            commentService.deleteComment(commentId);
-            return ResponseEntity.status(HttpStatus.OK).body("Comment deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
-        }
+        commentService.deleteComment(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body("Comment deleted successfully");
     }
 
     @GetMapping("/post/{postId}/comments")

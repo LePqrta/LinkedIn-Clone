@@ -23,12 +23,8 @@ public class AdminController {
     @PostMapping("/add-new-admin")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addAdmin(@RequestBody CreateUserRequest request) {
-        try{
         adminService.createUser(request);
         return new ResponseEntity<>("Admin created successfully", HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
     }
     // to test if the controller is working
     @GetMapping("/test")
@@ -40,58 +36,34 @@ public class AdminController {
     @GetMapping("/all-users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
-        try {
-            return ResponseEntity.ok(userService.getAllUsers());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        return ResponseEntity.ok(userService.getAllUsers());
     }
     @GetMapping("/all-posts")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllPosts() {
-        try {
-            return ResponseEntity.ok(postService.getAllPosts());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        return ResponseEntity.ok(postService.getAllPosts());
     }
     @GetMapping("/all-jobs")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllJobs() {
-        try {
-            return ResponseEntity.ok(jobService.getAllJobs());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        return ResponseEntity.ok(jobService.getAllJobs());
     }
     @DeleteMapping("/delete-user/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable String username) {
-        try {
-            userService.deleteUser(username);
-            return ResponseEntity.ok("User deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        userService.deleteUser(username);
+        return ResponseEntity.ok("User deleted successfully");
     }
     @DeleteMapping("/delete-post/{postId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deletePost(@PathVariable Long postId) {
-        try {
-            postService.deletePostAdmin(postId);
-            return ResponseEntity.ok("Post deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        postService.deletePostAdmin(postId);
+        return ResponseEntity.ok("Post deleted successfully");
     }
     @DeleteMapping("/delete-job/{jobId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteJob(@PathVariable int jobId) {
-        try {
-            jobService.deleteJobAdmin(jobId);
-            return ResponseEntity.ok("Job deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        jobService.deleteJobAdmin(jobId);
+        return ResponseEntity.ok("Job deleted successfully");
     }
 }

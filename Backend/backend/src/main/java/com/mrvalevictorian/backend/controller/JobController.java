@@ -17,60 +17,35 @@ public class JobController {
 
     @PostMapping("/create-job")
     public ResponseEntity<String> createJob(@RequestBody JobCreateRequest jobCreateRequest) {
-
-        try {
-            jobService.createJob(jobCreateRequest);
-            return ResponseEntity.ok("Job created successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+        jobService.createJob(jobCreateRequest);
+        return ResponseEntity.ok("Job created successfully");
     }
 
 
     @DeleteMapping("/delete-job/{jobId}")
     public ResponseEntity<String> deleteJob(@PathVariable int jobId) {
-        try {
-            jobService.deleteJob(jobId);
-            return ResponseEntity.ok("Job deleted successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+        jobService.deleteJob(jobId);
+        return ResponseEntity.ok("Job deleted successfully");
     }
     @GetMapping("/get-jobs")
     public ResponseEntity<List<Job>> getAllJobs() {
-        try {
-            List<Job> jobs = jobService.getAllJobs();
-            return ResponseEntity.ok(jobs);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(500).body(null);
-        }
+        List<Job> jobs = jobService.getAllJobs();
+        return ResponseEntity.ok(jobs);
     }
     @GetMapping("/get-jobs-not-applied")
     public ResponseEntity<List<Job>> getJobsNotApplied() {
-        try {
-            List<Job> jobs = jobService.getAllJobsNotApplied();
-            return ResponseEntity.ok(jobs);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(500).body(null);
-        }
+        List<Job> jobs = jobService.getAllJobsNotApplied();
+        return ResponseEntity.ok(jobs);
     }
     @GetMapping("/get-jobs-applied")
     public  ResponseEntity<List<Job>> getJobsApplied() {
-        try {
-            List<Job> jobs = jobService.getAllJobsApplied();
-            return ResponseEntity.ok(jobs);
-        } catch (IllegalArgumentException e) {
-                return ResponseEntity.status(500).body(null);
-        }
+        List<Job> jobs = jobService.getAllJobsApplied();
+        return ResponseEntity.ok(jobs);
     }
     @GetMapping("/get-jobs-created")
     public ResponseEntity<List<Job>> getJobsCreated() {
-        try {
-            List<Job> jobs = jobService.getByUserId();
-            return ResponseEntity.ok(jobs);
-        } catch (IllegalArgumentException _) {
-            return ResponseEntity.status(500).body(null);
-        }
+        List<Job> jobs = jobService.getByUserId();
+        return ResponseEntity.ok(jobs);
     }
     //admin job delete
 }

@@ -1,8 +1,6 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.ConnectionRequest;
-import com.mrvalevictorian.backend.exceptions.ConnectionException;
-import com.mrvalevictorian.backend.exceptions.UserNotFoundException;
 import com.mrvalevictorian.backend.model.Connection;
 import com.mrvalevictorian.backend.service.ConnectionService;
 import lombok.RequiredArgsConstructor;
@@ -21,91 +19,51 @@ public class ConnectionController {
 
     @PostMapping("/send-connection")
     public ResponseEntity<Map<String, String>> sendConnectionRequest(@RequestBody ConnectionRequest connectionRequest) {
-        try {
-            connectionService.sendConnectionRequest(connectionRequest.username());
+        connectionService.sendConnectionRequest(connectionRequest.username());
 
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Connection sent successfully");
-            return ResponseEntity.ok(response);
-
-        } catch (UserNotFoundException | ConnectionException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(500).body(error);
-}
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Connection sent successfully");
+        return ResponseEntity.ok(response);
     }
     @PostMapping("/accept-connection")
     public ResponseEntity<String> acceptConnectionRequest(@RequestParam int connectionId) {
-        try {
-            connectionService.acceptConnectionRequest(connectionId);
-            return ResponseEntity.ok("Connection accepted successfully");
-        } catch (UserNotFoundException | ConnectionException e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+        connectionService.acceptConnectionRequest(connectionId);
+        return ResponseEntity.ok("Connection accepted successfully");
     }
     @PostMapping("/reject-connection")
     public ResponseEntity<String> rejectConnectionRequest(@RequestParam int connectionId) {
-        try {
-            connectionService.rejectConnectionRequest(connectionId);
-            return ResponseEntity.ok("Connection rejected successfully");
-        } catch (UserNotFoundException | ConnectionException e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+        connectionService.rejectConnectionRequest(connectionId);
+        return ResponseEntity.ok("Connection rejected successfully");
     }
 
     @GetMapping("/get-connections")
     public ResponseEntity<List<Connection>> getAcceptedConnections() {
-        try {
-            List<Connection> connections = connectionService.getAcceptedConnectionsByUser();
-            return ResponseEntity.ok(connections);
-        } catch (UserNotFoundException _) {
-            return ResponseEntity.status(404).body(null);
-        }
+        List<Connection> connections = connectionService.getAcceptedConnectionsByUser();
+        return ResponseEntity.ok(connections);
     }
     @GetMapping("/pending-connections")
     public ResponseEntity<List<Connection>> getPendingConnections() {
-        try {
-            List<Connection> connections = connectionService.getPendingConnectionsForNotification();
-            return ResponseEntity.ok(connections);
-        } catch (UserNotFoundException _) {
-            return ResponseEntity.status(404).body(null);
-        }
+        List<Connection> connections = connectionService.getPendingConnectionsForNotification();
+        return ResponseEntity.ok(connections);
     }
     @GetMapping("/pending-connections-sender")
     public ResponseEntity<List<Connection>> getPendingConnectionsForSender() {
-        try {
-            List<Connection> connections = connectionService.getPendingConnectionsForSender();
-            return ResponseEntity.ok(connections);
-        } catch (UserNotFoundException _) {
-            return ResponseEntity.status(404).body(null);
-        }
+        List<Connection> connections = connectionService.getPendingConnectionsForSender();
+        return ResponseEntity.ok(connections);
     }
     @DeleteMapping("/remove-connection/{connectionId}")
     public ResponseEntity<String> deleteConnection(@PathVariable int connectionId) {
-        try {
-            connectionService.removeConnection(connectionId);
-            return ResponseEntity.ok("Connection deleted successfully");
-        } catch (UserNotFoundException | ConnectionException e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+        connectionService.removeConnection(connectionId);
+        return ResponseEntity.ok("Connection deleted successfully");
     }
     @GetMapping("/get-my-all-connections")
     public ResponseEntity<List<Connection>> getAllConnections() {
-        try {
-            List<Connection> connections = connectionService.getAllConnections();
-            return ResponseEntity.ok(connections);
-        } catch (UserNotFoundException _) {
-            return ResponseEntity.status(404).body(null);
-        }
+        List<Connection> connections = connectionService.getAllConnections();
+        return ResponseEntity.ok(connections);
     }
     @GetMapping("/get-connections-of-user/{username}")
     public ResponseEntity<List<Connection>> getConnectionsOfUser(@PathVariable String username) {
-        try {
-            List<Connection> connections = connectionService.getConnectionsByUsername(username);
-            return ResponseEntity.ok(connections);
-        } catch (UserNotFoundException _) {
-            return ResponseEntity.status(404).body(null);
-        }
+        List<Connection> connections = connectionService.getConnectionsByUsername(username);
+        return ResponseEntity.ok(connections);
     }
 }
-

@@ -4,7 +4,6 @@ import com.mrvalevictorian.backend.dto.EducationRequest;
 import com.mrvalevictorian.backend.model.Education;
 import com.mrvalevictorian.backend.service.EducationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +30,8 @@ public class EducationController {
 
     @DeleteMapping("/delete-education/{educationId}")
     public ResponseEntity<String> deleteEducation(@PathVariable Long educationId) {
-        try {
-            educationService.deleteEducation(educationId);
-            return ResponseEntity.ok("Education entry deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-        }
+        educationService.deleteEducation(educationId);
+        return ResponseEntity.ok("Education entry deleted successfully");
     }
 
     @GetMapping("/profile/{profileId}")
@@ -45,4 +40,3 @@ public class EducationController {
         return ResponseEntity.ok(educationList);
     }
 }
-

@@ -4,7 +4,6 @@ import com.mrvalevictorian.backend.dto.ExperienceRequest;
 import com.mrvalevictorian.backend.model.Experience;
 import com.mrvalevictorian.backend.service.ExperienceService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +30,8 @@ public class ExperienceController {
 
     @DeleteMapping("/delete-experience/{experienceId}")
     public ResponseEntity<String> deleteExperience(@PathVariable Integer experienceId) {
-        try {
-            experienceService.deleteExperience(experienceId);
-            return ResponseEntity.ok("Experience deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-        }
+        experienceService.deleteExperience(experienceId);
+        return ResponseEntity.ok("Experience deleted successfully");
     }
 
     @GetMapping("/profile/{profileId}")
@@ -45,4 +40,3 @@ public class ExperienceController {
         return ResponseEntity.ok(experiences);
     }
 }
-
