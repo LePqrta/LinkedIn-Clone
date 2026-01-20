@@ -21,26 +21,29 @@ public class JobService {
     private final UserRepo userRepo;
 
     public void createJob(JobCreateRequest jobCreateRequest) {
-        if(jobCreateRequest.getTitle().isEmpty() || jobCreateRequest.getDescription().isEmpty()
-                || jobCreateRequest.getLocation().isEmpty() ||
-                jobCreateRequest.getCompanyName().isEmpty()) {
+        if(jobCreateRequest.title().isEmpty() || jobCreateRequest.description().isEmpty()
+                || jobCreateRequest.location().isEmpty() ||
+                jobCreateRequest.companyName().isEmpty()) {
             throw new IllegalArgumentException("Missing information either in " +
                     "title or description or location or company name");
         }
-        if(jobRepo.findByTitle(jobCreateRequest.getTitle()).isPresent()) {
+        if(jobRepo.findByTitle(jobCreateRequest.title()).isPresent()) {
             throw new IllegalArgumentException("Job with this title already exists");
         }
         String username = jwtService.extractUser(jwtService.getToken());
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        Job job = new Job();
-        job.setUser(user);
-        job.setTitle(jobCreateRequest.getTitle());
-        job.setDescription(jobCreateRequest.getDescription());
-        job.setCompanyName(jobCreateRequest.getCompanyName());
-        job.setLocation(jobCreateRequest.getLocation());
-        job.setPostedAt(LocalDateTime.now());
-        jobRepo.save(job);
+
+        var newJob = Job.builder()
+                .user(user)
+                .title(jobCreateRequest.title())
+                .description(jobCreateRequest.description())
+                .companyName(jobCreateRequest.companyName())
+                .location(jobCreateRequest.location())
+                .postedAt(LocalDateTime.now())
+                .build();
+
+        jobRepo.save(newJob);
     }
     public void deleteJob(int jobId) {
         Job job = jobRepo.findById(jobId)

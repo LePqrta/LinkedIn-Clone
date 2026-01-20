@@ -2,7 +2,6 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.AuthRequest;
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
-import com.mrvalevictorian.backend.exceptions.UserNotFoundException;
 import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import com.mrvalevictorian.backend.service.AuthService;
@@ -12,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,8 +41,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> generateToken(@RequestBody AuthRequest request) {
         try {
-            Map<String, String> map = new HashMap<>();
-            map=authService.login(request);
+            var map=authService.login(request);
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
@@ -67,8 +63,7 @@ public class AuthController {
     public User returnUser() {
         String username = jwtService.extractUser(jwtService.getToken());
         // find the user by username, if exists, set the user, if not, throw an exception
-        User user = userRepo.findByUsername(username)
+        return userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return user;
 }
 }

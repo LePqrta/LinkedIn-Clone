@@ -22,7 +22,7 @@ public class ConnectionController {
     @PostMapping("/send-connection")
     public ResponseEntity<Map<String, String>> sendConnectionRequest(@RequestBody ConnectionRequest connectionRequest) {
         try {
-            connectionService.sendConnectionRequest(connectionRequest.getUsername());
+            connectionService.sendConnectionRequest(connectionRequest.username());
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Connection sent successfully");

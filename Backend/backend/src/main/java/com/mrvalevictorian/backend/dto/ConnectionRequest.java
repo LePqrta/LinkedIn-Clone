@@ -1,8 +1,6 @@
 package com.mrvalevictorian.backend.dto;
 
-import lombok.Data;
-
-@Data
-public class ConnectionRequest {
-    private String username;
+public record ConnectionRequest(
+        String username
+) {
 }

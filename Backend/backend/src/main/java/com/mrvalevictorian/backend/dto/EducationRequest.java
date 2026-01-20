@@ -1,17 +1,14 @@
 package com.mrvalevictorian.backend.dto;
 
-import lombok.Data;
-
 import java.time.LocalDate;
 
-@Data
-public class EducationRequest {
-
-    private String institutionName;
-    private String degree;
-    private String fieldOfStudy;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String description;
-    private Long profileId;
+public record EducationRequest(
+        String institutionName,
+        String degree,
+        String fieldOfStudy,
+        LocalDate startDate,
+        LocalDate endDate,
+        String description,
+        Long profileId
+) {
 }

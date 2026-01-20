@@ -35,13 +35,15 @@ public class ApplicationService {
                 jobId).isPresent()) {
             throw new IllegalArgumentException("You have already applied for this job");
         }
-        Application application = new Application();
-        application.setUser(userRepo.findByUsername(username).get());
-        application.setAppliedAt(LocalDateTime.now());
-        application.setCoverLetter(applicationRequest.getCoverLetter());
-        //application.setResumeUrl(applicationRequest.getResumeUrl());
-        application.setJob(jobRepo.findById(jobId).get());
-        applicationRepo.save(application);
+
+        var newApplication = Application.builder()
+                .user(userRepo.findByUsername(username).get())
+                .job(jobRepo.findById(jobId).get())
+                .coverLetter(applicationRequest.coverLetter())
+                //.resumeUrl(applicationRequest.reesumeUrl())
+                .appliedAt(LocalDateTime.now())
+                .build();
+        applicationRepo.save(newApplication);
     }
 
     public List<Application> getApplications(int jobId) throws AuthenticationException {

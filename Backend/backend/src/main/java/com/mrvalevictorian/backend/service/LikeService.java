@@ -25,22 +25,23 @@ public class LikeService {
 
     // Implement the logic for liking a post
     public String likePost(LikeRequest request) {
-        Post post = postRepo.findPostByPostId(request.getPostId())
-                .orElseThrow(() -> new RuntimeException("Post with ID " + request.getPostId() + " not found"));
+        Post post = postRepo.findPostByPostId(request.postId())
+                .orElseThrow(() -> new RuntimeException("Post with ID " + request.postId() + " not found"));
 
         String username = jwtService.extractUser(jwtService.getToken());
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
 
-        Optional<Like> existingLike = likeRepo.findByPostIdAndUserId(request.getPostId(), user.getId());
+        Optional<Like> existingLike = likeRepo.findByPostIdAndUserId(request.postId(), user.getId());
         if (existingLike.isPresent()) {
             likeRepo.delete(existingLike.get());
             return "Unliked";
         } else {
-            Like like = new Like();
-            like.setPost(post);
-            like.setUser(user);
-            likeRepo.save(like);
+            var newLike = Like.builder()
+                    .post(post)
+                    .user(user)
+                    .build();
+            likeRepo.save(newLike);
             return "Liked";
         }
     }

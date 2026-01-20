@@ -22,7 +22,7 @@ public class PostService {
     private final UserRepo userRepo;
     // post creation
     public void createPost(PostingRequest postingRequest) {
-        if (postingRequest.getContent() == null || postingRequest.getContent().isEmpty()) {
+        if (postingRequest.content() == null || postingRequest.content().isEmpty()) {
             throw new PostContentEmptyException("Content cannot be null or empty");
         }
         // get the current token from the service to match the post to the current user
@@ -30,11 +30,14 @@ public class PostService {
         // find the user by username, if exists, set the user, if not, throw an exception
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        Post post = new Post();
-        post.setContent(postingRequest.getContent());
-        post.setUser(user);
-        post.setCreatedAt(LocalDateTime.now());
-        postRepo.save(post);
+
+        var newPost = Post.builder()
+                .content(postingRequest.content())
+                .user(user)
+                .createdAt(LocalDateTime.now())
+                .build();
+        postRepo.save(newPost);
+
     }
 
     public void deletePost(Long postId) {

@@ -26,10 +26,10 @@ public class CommentService {
     private final PostRepo postRepo;
 
     public void createComment(CommentRequest commentRequest) {
-        Post post = postRepo.findPostByPostId(commentRequest.getPostId())
+        Post post = postRepo.findPostByPostId(commentRequest.postId())
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        if (commentRequest.getContent() == null || commentRequest.getContent().isEmpty()) {
+        if (commentRequest.content() == null || commentRequest.content().isEmpty()) {
             throw new PostContentEmptyException("Content cannot be null or empty");
         }
 
@@ -37,12 +37,13 @@ public class CommentService {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        Comment comment = new Comment();
-        comment.setContent(commentRequest.getContent());
-        comment.setPost(post);
-        comment.setUser(user);
-        comment.setCreatedAt(LocalDateTime.now());
-        commentRepo.save(comment);
+        var newComment = Comment.builder()
+                .content(commentRequest.content())
+                .user(user)
+                .post(post)
+                .createdAt(LocalDateTime.now())
+                .build();
+        commentRepo.save(newComment);
     }
 
     public void deleteComment(Long commentId) {

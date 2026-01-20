@@ -22,14 +22,14 @@ public class ProfileService {
         String username = jwtService.extractUser(jwtService.getToken());
         Profile profile = profileRepo.findProfileByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
-        profile.setSummary(summaryEditRequest.getSummary());
+        profile.setSummary(summaryEditRequest.summary());
         profileRepo.save(profile);
     }
     public void editLocation(LocationEditRequest locationEditRequest) {
         String username = jwtService.extractUser(jwtService.getToken());
         Profile profile = profileRepo.findProfileByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
-        profile.setLocation(locationEditRequest.getLocation());
+        profile.setLocation(locationEditRequest.location());
         profileRepo.save(profile);
     }
     public Profile getProfileByUsername(String username) {

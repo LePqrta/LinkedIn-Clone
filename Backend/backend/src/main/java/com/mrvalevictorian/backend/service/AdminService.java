@@ -33,21 +33,23 @@ public class AdminService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
     public void createUser(CreateUserRequest request) throws IllegalStateException {
-        userRepository.findByUsername(request.getUsername())
+        userRepository.findByUsername(request.username())
                 .ifPresent(user -> {
                     throw new IllegalStateException("User already exists: " + user.getUsername());
                 });
-        userRepository.findByEmail(request.getEmail())
+        userRepository.findByEmail(request.email())
                 .ifPresent(user -> {
                     throw new IllegalStateException("Email already exists: " + user.getEmail());
                 });
-        User newUser = new User();
-        newUser.setUsername(request.getUsername());
-        newUser.setEmail(request.getEmail());
-        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-        newUser.setCreatedAt(LocalDateTime.now());
-        newUser.setUpdatedAt(LocalDateTime.now());
-        newUser.setRole(RoleEnum.ADMIN);
+
+        var newUser = User.builder()
+                .username(request.username())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .role(RoleEnum.ADMIN)
+                .build();
 
         userRepository.save(newUser);
     }

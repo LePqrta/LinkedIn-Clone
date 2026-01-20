@@ -8,7 +8,6 @@ import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.repo.ProfileRepo;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -34,22 +32,23 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public void createUser(CreateUserRequest request) {
-        userRepository.findByUsername(request.getUsername())
+        userRepository.findByUsername(request.username())
                 .ifPresent(user -> {
                     throw new IllegalStateException("User already exists: " + user.getUsername());
                 });
-        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+        userRepository.findByEmail(request.email()).ifPresent(user -> {
             throw new IllegalStateException("Email already exists: " + user.getEmail());
         });
-        User newUser = new User();
-        newUser.setUsername(request.getUsername());
-        newUser.setEmail(request.getEmail());
-        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-        newUser.setName(request.getName());
-        newUser.setSurname(request.getSurname());
-        newUser.setCreatedAt(LocalDateTime.now());
-        newUser.setUpdatedAt(LocalDateTime.now());
-        newUser.setRole(RoleEnum.USER);
+        var newUser = User.builder()
+                .username(request.username())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .name(request.name())
+                .surname(request.surname())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .role(RoleEnum.USER)
+                .build();
 
         userRepository.save(newUser);
 
@@ -69,12 +68,12 @@ public class AuthService {
 //        }
     }
     public Map<String, String> login(AuthRequest request){
-        User user = userService.getByUsername(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı"));
+        User user = userService.getByUsername(request.username())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
         if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(request.getUsername());
+            String token = jwtService.generateToken(request.username());
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             response.put("name", user.getName());
@@ -83,12 +82,12 @@ public class AuthService {
         }
         throw new UsernameNotFoundException("Username can not be found or the password is incorrect");
     }
-    public String createVerificationToken(User user) {
+    /*public String createVerificationToken(User user) {
         // Benzersiz bir token oluştur
         String token = UUID.randomUUID().toString();
         tokenStorage.put(token, user);
         return token;
-    }
+    }*/
 
     public boolean verifyUser(String token) {
         User user = tokenStorage.get(token);

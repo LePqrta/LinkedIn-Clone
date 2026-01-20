@@ -1,8 +1,6 @@
 package com.mrvalevictorian.backend.dto;
 
-import lombok.Data;
+public record LocationEditRequest(
+        String location
+) {}
 
-@Data
-public class LocationEditRequest {
-    private String location;
-}

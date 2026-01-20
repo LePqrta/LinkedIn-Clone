@@ -1,9 +1,7 @@
 package com.mrvalevictorian.backend.dto;
 
-import lombok.Data;
+public record PostingRequest(
+        String content,
+        byte[] image
+) {}
 
-@Data
-public class PostingRequest {
-    private String content;
-    private byte[] image;
-}

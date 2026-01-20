@@ -19,14 +19,16 @@ public class SkillService {
 
 
     public void createSkill(SkillRequest skillRequest) {
-        Profile profile = profileRepo.findById(skillRequest.getProfileId())
-                .orElseThrow(() -> new RuntimeException("Profile not found with ID: " + skillRequest.getProfileId()));
+        Profile profile = profileRepo.findById(skillRequest.profileId())
+                .orElseThrow(() -> new RuntimeException("Profile not found with ID: " + skillRequest.profileId()));
 
-        Skills skill = new Skills();
-        skill.setSkillName(skillRequest.getSkillName());
-        skill.setProfile(profile);
 
-        skillRepo.save(skill);
+        var newSkill = Skills.builder()
+                .skillName(skillRequest.skillName())
+                .profile(profile)
+                .build();
+
+        skillRepo.save(newSkill);
     }
 
     public void deleteSkill(Long skillId) {

@@ -18,18 +18,20 @@ public class EducationService {
     private final ProfileRepo profileRepo;
 
     public void createEducation(EducationRequest educationRequest) {
-        Profile profile = profileRepo.findById(educationRequest.getProfileId())
-                .orElseThrow(() -> new RuntimeException("Profile not found with ID: " + educationRequest.getProfileId()));
+        Profile profile = profileRepo.findById(educationRequest.profileId())
+                .orElseThrow(() -> new RuntimeException("Profile not found with ID: " + educationRequest.profileId()));
 
-        Education education = new Education();
-        education.setDegree(educationRequest.getDegree());
-        education.setInstitutionName(educationRequest.getInstitutionName());
-        education.setFieldOfStudy(educationRequest.getFieldOfStudy());
-        education.setStartDate(educationRequest.getStartDate());
-        education.setEndDate(educationRequest.getEndDate());
-        education.setProfile(profile);
 
-        educationRepo.save(education);
+        var newEducation = Education.builder()
+                .degree(educationRequest.degree())
+                .institutionName(educationRequest.institutionName())
+                .fieldOfStudy(educationRequest.fieldOfStudy())
+                .startDate(educationRequest.startDate())
+                .endDate(educationRequest.endDate())
+                .profile(profile)
+                .build();
+
+        educationRepo.save(newEducation);
     }
 
     public void deleteEducation(Long educationId) {

@@ -1,10 +1,7 @@
 package com.mrvalevictorian.backend.dto;
 
-import lombok.Data;
+public record SkillRequest(
+        String skillName,
+        Long profileId
+) {}
 
-@Data
-public class SkillRequest {
-
-    private String skillName;
-    private Long profileId;
-}

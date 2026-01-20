@@ -20,18 +20,19 @@ public class ExperienceService {
     private final JwtService jwtService;
 
     public void createExperience(ExperienceRequest experienceRequest) {
-        Profile profile = profileRepo.findById(experienceRequest.getProfileId())
-                .orElseThrow(() -> new ExpressionException("Profile not found with ID: " + experienceRequest.getProfileId()));
+        Profile profile = profileRepo.findById(experienceRequest.profileId())
+                .orElseThrow(() -> new ExpressionException("Profile not found with ID: " + experienceRequest.profileId()));
 
-        Experience experience = new Experience();
-        experience.setCompanyName(experienceRequest.getCompanyName());
-        experience.setJobTitle(experienceRequest.getJobTitle());
-        experience.setStartDate(experienceRequest.getStartDate());
-        experience.setEndDate(experienceRequest.getEndDate());
-        experience.setDescription(experienceRequest.getDescription());
-        experience.setProfile(profile);
+        var newExperience = Experience.builder()
+                        .companyName(experienceRequest.companyName())
+                        .jobTitle(experienceRequest.jobTitle())
+                        .startDate(experienceRequest.startDate())
+                        .endDate(experienceRequest.endDate())
+                        .description(experienceRequest.description())
+                        .profile(profile)
+                        .build();
 
-        experienceRepo.save(experience);
+        experienceRepo.save(newExperience);
     }
 
     public void deleteExperience(Integer experienceId) {

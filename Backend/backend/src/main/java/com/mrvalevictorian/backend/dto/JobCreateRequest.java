@@ -1,11 +1,9 @@
 package com.mrvalevictorian.backend.dto;
 
-import lombok.Data;
+public record JobCreateRequest(
+        String companyName,
+        String title,
+        String description,
+        String location
+) {}
 
-@Data
-public class JobCreateRequest {
-    private String companyName;
-    private String title;
-    private String description;
-    private String location;
-}

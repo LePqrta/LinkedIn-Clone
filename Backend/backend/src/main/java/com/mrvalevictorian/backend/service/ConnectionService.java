@@ -35,12 +35,13 @@ public class ConnectionService {
             throw new ConnectionException("Connection request already sent");
         }
 
-        Connection connection = new Connection();
-        connection.setSender(sender);
-        connection.setReceiver(receiver);
-        connection.setStatus(StatusEnum.PENDING);
-        connection.setCreatedAt(LocalDateTime.now());
-        connectionRepo.save(connection);
+        var newConnection = Connection.builder()
+                .sender(sender)
+                .receiver(receiver)
+                .status(StatusEnum.PENDING)
+                .createdAt(LocalDateTime.now())
+                .build();
+        connectionRepo.save(newConnection);
     }
     public void acceptConnectionRequest(int connectionId) {
         Connection connection = connectionRepo.findById(connectionId)
