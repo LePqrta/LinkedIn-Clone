@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.SkillRequest;
 import com.mrvalevictorian.backend.model.Skills;
 import com.mrvalevictorian.backend.service.SkillService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class SkillController {
 
 
     @PostMapping("/create-skill")
-    public ResponseEntity<Map<String, String>> createSkill(@RequestBody SkillRequest skillRequest) {
+    public ResponseEntity<Map<String, String>> createSkill(@RequestBody @Valid SkillRequest skillRequest) {
         skillService.createSkill(skillRequest);
 
         Map<String, String> response = new HashMap<>();

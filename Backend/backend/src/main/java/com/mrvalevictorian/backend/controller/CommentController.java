@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.CommentRequest;
 import com.mrvalevictorian.backend.model.Comment;
 import com.mrvalevictorian.backend.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class CommentController {
 
     // Example method
     @PostMapping("/create-comment")
-    public ResponseEntity<String> createComment(@RequestBody CommentRequest commentRequest) {
+    public ResponseEntity<String> createComment(@RequestBody @Valid CommentRequest commentRequest) {
         commentService.createComment(commentRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("Comment created successfully");
     }

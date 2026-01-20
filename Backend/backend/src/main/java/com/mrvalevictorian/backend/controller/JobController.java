@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.JobCreateRequest;
 import com.mrvalevictorian.backend.model.Job;
 import com.mrvalevictorian.backend.service.JobService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class JobController {
     private final JobService jobService;
 
     @PostMapping("/create-job")
-    public ResponseEntity<String> createJob(@RequestBody JobCreateRequest jobCreateRequest) {
+    public ResponseEntity<String> createJob(@RequestBody @Valid JobCreateRequest jobCreateRequest) {
         jobService.createJob(jobCreateRequest);
         return ResponseEntity.ok("Job created successfully");
     }

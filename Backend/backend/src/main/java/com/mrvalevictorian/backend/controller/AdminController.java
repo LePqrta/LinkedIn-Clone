@@ -5,6 +5,7 @@ import com.mrvalevictorian.backend.service.AdminService;
 import com.mrvalevictorian.backend.service.JobService;
 import com.mrvalevictorian.backend.service.PostService;
 import com.mrvalevictorian.backend.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class AdminController {
 
     @PostMapping("/add-new-admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> addAdmin(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<String> addAdmin(@RequestBody @Valid CreateUserRequest request) {
         adminService.createUser(request);
         return new ResponseEntity<>("Admin created successfully", HttpStatus.CREATED);
     }

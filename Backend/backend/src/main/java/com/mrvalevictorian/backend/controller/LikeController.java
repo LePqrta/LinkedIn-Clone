@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.LikeRequest;
 import com.mrvalevictorian.backend.service.LikeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/like-post")
-    public ResponseEntity<String> likePost(@RequestBody LikeRequest request) {
+    public ResponseEntity<String> likePost(@RequestBody @Valid LikeRequest request) {
         String result = likeService.likePost(request);
         return ResponseEntity.ok(result);
     }

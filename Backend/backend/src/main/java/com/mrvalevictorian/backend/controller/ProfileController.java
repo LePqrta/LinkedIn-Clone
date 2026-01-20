@@ -5,6 +5,7 @@ import com.mrvalevictorian.backend.dto.LocationEditRequest;
 import com.mrvalevictorian.backend.dto.SummaryEditRequest;
 import com.mrvalevictorian.backend.model.Profile;
 import com.mrvalevictorian.backend.service.ProfileService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class ProfileController {
         return ResponseEntity.ok(profile);
     }
     @GetMapping("/get-profile/{username}")
-    public ResponseEntity<Profile> getProfileByUsername(@PathVariable String username) {
+    public ResponseEntity<Profile> getProfileByUsername(@PathVariable @Valid String username) {
         Profile profile = profileService.getProfileByUsername(username);
         return ResponseEntity.ok(profile);
     }

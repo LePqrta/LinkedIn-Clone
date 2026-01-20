@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.ConnectionRequest;
 import com.mrvalevictorian.backend.model.Connection;
 import com.mrvalevictorian.backend.service.ConnectionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class ConnectionController {
     private final ConnectionService connectionService;
 
     @PostMapping("/send-connection")
-    public ResponseEntity<Map<String, String>> sendConnectionRequest(@RequestBody ConnectionRequest connectionRequest) {
+    public ResponseEntity<Map<String, String>> sendConnectionRequest(@RequestBody @Valid ConnectionRequest connectionRequest) {
         connectionService.sendConnectionRequest(connectionRequest.username());
 
         Map<String, String> response = new HashMap<>();

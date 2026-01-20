@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.ExperienceRequest;
 import com.mrvalevictorian.backend.model.Experience;
 import com.mrvalevictorian.backend.service.ExperienceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ExperienceController {
     private final ExperienceService experienceService;
 
     @PostMapping("/create-experience")
-    public ResponseEntity<Map<String, String>> createExperience(@RequestBody ExperienceRequest experienceRequest) {
+    public ResponseEntity<Map<String, String>> createExperience(@RequestBody @Valid ExperienceRequest experienceRequest) {
         experienceService.createExperience(experienceRequest);
 
         Map<String, String> response = new HashMap<>();

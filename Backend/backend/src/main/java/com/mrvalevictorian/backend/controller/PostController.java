@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.PostingRequest;
 import com.mrvalevictorian.backend.model.Post;
 import com.mrvalevictorian.backend.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class PostController {
     private final PostService postService;
     @PostMapping("/create-post")
-    public ResponseEntity<String> createPost(@RequestBody PostingRequest postRequest) {
+    public ResponseEntity<String> createPost(@RequestBody @Valid PostingRequest postRequest) {
         postService.createPost(postRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully");
     }

@@ -2,6 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.ApplicationRequest;
 import com.mrvalevictorian.backend.service.ApplicationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ApplicationController {
     private final ApplicationService applicationService;
 
     @PostMapping("/apply/{jobId}")
-    public ResponseEntity<String> applyJob(@RequestBody ApplicationRequest applicationRequest,
+    public ResponseEntity<String> applyJob(@RequestBody @Valid ApplicationRequest applicationRequest,
                                            @PathVariable int jobId) throws AuthenticationException {
         applicationService.applyJob(applicationRequest, jobId);
         return new ResponseEntity<>("Application applied successfully", HttpStatus.OK);

@@ -6,11 +6,10 @@ import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import com.mrvalevictorian.backend.service.AuthService;
 import com.mrvalevictorian.backend.service.JwtService;
-import com.mrvalevictorian.backend.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +25,13 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> addUser(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<String> addUser(@RequestBody @Valid CreateUserRequest request) {
         authService.createUser(request);
 
         return new ResponseEntity<>("User created successfully", HttpStatus.OK);
     }
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> generateToken(@RequestBody AuthRequest request) {
+    public ResponseEntity<Map<String, String>> generateToken(@RequestBody @Valid AuthRequest request) {
         var map = authService.login(request);
 
         return new ResponseEntity<>(map, HttpStatus.OK);

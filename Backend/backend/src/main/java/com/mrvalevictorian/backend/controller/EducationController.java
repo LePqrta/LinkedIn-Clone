@@ -3,6 +3,7 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.EducationRequest;
 import com.mrvalevictorian.backend.model.Education;
 import com.mrvalevictorian.backend.service.EducationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class EducationController {
     private final EducationService educationService;
 
     @PostMapping("/create-education")
-    public ResponseEntity<Map<String, String>> createEducation(@RequestBody EducationRequest educationRequest) {
+    public ResponseEntity<Map<String, String>> createEducation(@RequestBody @Valid EducationRequest educationRequest) {
         educationService.createEducation(educationRequest);
 
         Map<String, String> response = new HashMap<>();
