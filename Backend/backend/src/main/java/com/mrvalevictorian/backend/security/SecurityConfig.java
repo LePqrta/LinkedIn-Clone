@@ -1,6 +1,5 @@
 package com.mrvalevictorian.backend.security;
 
-import com.mrvalevictorian.backend.repo.UserRepo;
 import com.mrvalevictorian.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +16,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration; // Import this
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource; // Import this
-import org.springframework.web.cors.CorsConfigurationSource; // Import this
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.List; // Import this
+import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -34,12 +33,11 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final UserRepo userRepo;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(withDefaults()) // This will now use the apiConfigurationSource bean below
+                .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
                         .requestMatchers("/auth/**").permitAll()
@@ -56,7 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/experiences/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/profile/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/education/**").hasAnyRole("USER","ADMIN")
-                        .anyRequest().authenticated() // Good practice to close any gaps
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
@@ -68,7 +66,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // Allow your frontend origin
-        configuration.setAllowedOriginPatterns(List.of("*")); // Or specific origins like "http://localhost:5173"
+        configuration.setAllowedOriginPatterns(List.of("*"));
         // Allow standard methods including OPTIONS
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // Allow all headers (needed for Authorization)
@@ -81,7 +79,6 @@ public class SecurityConfig {
         return source;
     }
 
-    // ... existing beans (authenticationProvider, authenticationManager) ...
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

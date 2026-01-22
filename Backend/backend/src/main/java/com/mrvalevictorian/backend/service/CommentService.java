@@ -64,8 +64,6 @@ public class CommentService {
     }
 
     public List<Comment> getCommentsByPost(Long postId) {
-        Post post = postRepo.findPostByPostId(postId)
-                .orElseThrow(() -> new RuntimeException("Post with ID " + postId + " not found"));
         return commentRepo.findByPost_PostId(postId);
     }
 

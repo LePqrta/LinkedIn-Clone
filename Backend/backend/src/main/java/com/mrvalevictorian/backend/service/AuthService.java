@@ -14,7 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.mrvalevictorian.backend.model.VerificationToken;
+import com.mrvalevictorian.backend.repo.VerificationTokenRepo;
 
+import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,12 +27,12 @@ import java.util.Map;
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepo userRepository;
-    private final Map<String, User> tokenStorage = new HashMap<>();
     private final EmailService emailService;
     private final UserService userService;
     private final JwtService jwtService;
     private final ProfileRepo profileRepo;
     private final AuthenticationManager authenticationManager;
+    private final VerificationTokenRepo tokenRepo;
 
     public void createUser(CreateUserRequest request) {
         userRepository.findByUsername(request.username())
@@ -57,15 +60,17 @@ public class AuthService {
         profileRepo.save(newProfile);
 
 
-//        try {
-//            // Doğrulama token'ı oluştur
-//            String token = createVerificationToken(newUser);
-//
-//            // Doğrulama email'i gönder
-//            emailService.sendVerificationEmail(newUser.getEmail(), token);
-//        } catch (Exception e) {
-//            throw new RuntimeException("Failed to send verification email", e);
-//        }
+        try {
+            String token = UUID.randomUUID().toString();
+            VerificationToken verificationToken = new VerificationToken(newUser, token);
+            tokenRepo.save(verificationToken);
+
+            // Send email
+            emailService.sendVerificationEmail(newUser.getEmail(), token);
+        } catch (Exception e) {
+            // In a real app, you might want to delete the user if email fails
+            throw new RuntimeException("Failed to send verification email", e);
+        }
     }
     public Map<String, String> login(AuthRequest request){
         User user = userService.getByUsername(request.username())
@@ -82,22 +87,24 @@ public class AuthService {
         }
         throw new UsernameNotFoundException("Username can not be found or the password is incorrect");
     }
-    /*public String createVerificationToken(User user) {
-        // Benzersiz bir token oluştur
-        String token = UUID.randomUUID().toString();
-        tokenStorage.put(token, user);
-        return token;
-    }*/
 
     public boolean verifyUser(String token) {
-        User user = tokenStorage.get(token);
-        if (user != null) {
-            user.setVerified(true);
-            userRepository.save(user);
-            tokenStorage.remove(token);
-            return true;
+        VerificationToken verificationToken = tokenRepo.findByToken(token);
+        if (verificationToken == null) {
+            return false;
         }
-        return false;
+
+        // Check if expired
+        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        User user = verificationToken.getUser();
+        user.setVerified(true); // Sets isEnabled = true
+        userRepository.save(user);
+
+        tokenRepo.delete(verificationToken); // Cleanup
+        return true;
     }
 
 

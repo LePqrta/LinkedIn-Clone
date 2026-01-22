@@ -58,7 +58,7 @@ public class User implements UserDetails {
     private boolean accountNonLocked = true;
     @Transient
     private boolean credentialsNonExpired = true;
-    @Transient
+    @Column(name = "is_enabled")
     private boolean isEnabled = true;
 
 
@@ -66,8 +66,13 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role == null ? List.of() : List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
-    public void setVerified(boolean b) {
-        System.out.println("Email verified = " +b);
+    public void setVerified(boolean verified) {
+        this.isEnabled = verified;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
     }
 
 

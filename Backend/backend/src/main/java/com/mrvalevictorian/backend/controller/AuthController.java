@@ -35,8 +35,7 @@ public class AuthController {
         var map = authService.login(request);
 
         return new ResponseEntity<>(map, HttpStatus.OK);
-    }//postman scriptinin çalışması için json olarak alıyorum outputu.
-    //generateToken'ı login yaptım içinde script'e bak script orada
+    }
 
     @GetMapping("/verify")
     public String verifyUser(@RequestParam("token") String token) {

@@ -1,6 +1,9 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
+import com.mrvalevictorian.backend.model.Job;
+import com.mrvalevictorian.backend.model.Post;
+import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.service.AdminService;
 import com.mrvalevictorian.backend.service.JobService;
 import com.mrvalevictorian.backend.service.PostService;
@@ -11,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,17 +41,17 @@ public class AdminController {
 
     @GetMapping("/all-users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
     @GetMapping("/all-posts")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllPosts() {
+    public ResponseEntity<List<Post>> getAllPosts() {
         return ResponseEntity.ok(postService.getAllPosts());
     }
     @GetMapping("/all-jobs")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllJobs() {
+    public ResponseEntity<List<Job>> getAllJobs() {
         return ResponseEntity.ok(jobService.getAllJobs());
     }
     @DeleteMapping("/delete-user/{username}")
