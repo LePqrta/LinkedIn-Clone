@@ -6,32 +6,26 @@ import { Loader } from '../../../component/loader/Loader';
 import { Navbar } from '../../../component/Navbar';
 import classes from './Connections.module.scss';
 
-interface User {
+// UserResponse DTO (matching backend response)
+interface UserResponse {
     id: string;
     username: string;
     email: string;
     name: string | null;
     surname: string | null;
     role: string;
-    createdAt: string;
-    updatedAt: string;
-    accountNonExpired: boolean;
-    accountNonLocked: boolean;
-    credentialsNonExpired: boolean;
-    enabled: boolean;
-    authorities: Array<{ authority: string }>;
 }
 
 interface PendingConnection {
     connectionId: number;
-    sender: User;
-    receiver: User;
+    sender: UserResponse;
+    receiver: UserResponse;
     status: 'PENDING';
     createdAt: string;
 }
 
 export function Connections() {
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<UserResponse[]>([]);
     const [pendingConnections, setPendingConnections] = useState<PendingConnection[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -115,7 +109,7 @@ export function Connections() {
             console.log('Users without connections:', data);
             
             // Filter out current user and users with pending connections
-            const filteredUsers = data.filter((user: User) => 
+            const filteredUsers = data.filter((user: UserResponse) => 
                 user.username !== currentUsername && 
                 !pendingConnections.some(conn => 
                     conn.sender.username === user.username || 
@@ -196,7 +190,7 @@ export function Connections() {
         }
     };
 
-    const renderUserCard = (user: User) => {
+    const renderUserCard = (user: UserResponse) => {
         if (!user || !user.username) {
             console.error('Invalid user object:', user);
             return null;

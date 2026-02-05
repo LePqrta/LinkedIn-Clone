@@ -1,7 +1,8 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
-import com.mrvalevictorian.backend.model.Job;
+import com.mrvalevictorian.backend.dto.response.JobResponse;
+import com.mrvalevictorian.backend.mapper.EntityMapper;
 import com.mrvalevictorian.backend.model.Post;
 import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.service.AdminService;
@@ -25,18 +26,13 @@ public class AdminController {
     private final UserService userService;
     private final PostService postService;
     private final JobService jobService;
+    private final EntityMapper mapper;
 
     @PostMapping("/add-new-admin")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addAdmin(@RequestBody @Valid CreateUserRequest request) {
         adminService.createUser(request);
         return new ResponseEntity<>("Admin created successfully", HttpStatus.CREATED);
-    }
-    // to test if the controller is working
-    @GetMapping("/test")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> createPost() {
-        return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully");
     }
 
     @GetMapping("/all-users")
@@ -51,8 +47,8 @@ public class AdminController {
     }
     @GetMapping("/all-jobs")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Job>> getAllJobs() {
-        return ResponseEntity.ok(jobService.getAllJobs());
+    public ResponseEntity<List<JobResponse>> getAllJobs() {
+        return ResponseEntity.ok(jobService.getAllJobs().stream().map(mapper::toJobResponse).toList());
     }
     @DeleteMapping("/delete-user/{username}")
     @PreAuthorize("hasRole('ADMIN')")

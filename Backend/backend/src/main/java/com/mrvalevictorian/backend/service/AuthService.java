@@ -80,9 +80,13 @@ public class AuthService {
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(request.username());
             Map<String, String> response = new HashMap<>();
-            response.put("token", token);
+            response.put("id", String.valueOf(user.getId()));
+            response.put("username", user.getUsername());
+            response.put("email", user.getEmail());
             response.put("name", user.getName());
             response.put("surname", user.getSurname());
+            response.put("role", user.getRole() != null ? user.getRole().name() : "");
+            response.put("token", token);
             return response;
         }
         throw new UsernameNotFoundException("Username can not be found or the password is incorrect");

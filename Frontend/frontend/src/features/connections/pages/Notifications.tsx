@@ -5,26 +5,20 @@ import { Navbar } from '../../../component/Navbar';
 import { Link } from 'react-router-dom';
 import classes from './Connections.module.scss';
 
-interface User {
+// UserResponse DTO (matching backend response)
+interface UserResponse {
     id: string;
     username: string;
     email: string;
     name: string | null;
     surname: string | null;
     role: string;
-    createdAt: string;
-    updatedAt: string;
-    accountNonExpired: boolean;
-    accountNonLocked: boolean;
-    credentialsNonExpired: boolean;
-    enabled: boolean;
-    authorities: Array<{ authority: string }>;
 }
 
 interface PendingConnection {
     connectionId: number;
-    sender: User;
-    receiver: User;
+    sender: UserResponse;
+    receiver: UserResponse;
     status: 'PENDING';
     createdAt: string;
 }

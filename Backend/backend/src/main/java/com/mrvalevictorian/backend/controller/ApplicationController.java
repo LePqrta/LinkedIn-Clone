@@ -1,6 +1,7 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.ApplicationRequest;
+import com.mrvalevictorian.backend.model.Application;
 import com.mrvalevictorian.backend.service.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
+import java.util.List;
 
 
 @RestController
@@ -25,7 +27,7 @@ public class ApplicationController {
         return new ResponseEntity<>("Application applied successfully", HttpStatus.OK);
     }
     @GetMapping("/get-applications/{jobId}")
-    public ResponseEntity<?> getApplications(@PathVariable int jobId) throws AuthenticationException {
+    public ResponseEntity<List<Application>> getApplications(@PathVariable int jobId) throws AuthenticationException {
         return new ResponseEntity<>(applicationService.getApplications(jobId), HttpStatus.OK);
     }
     @DeleteMapping("/delete-application/{applicationId}")

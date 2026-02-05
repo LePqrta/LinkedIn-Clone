@@ -3,6 +3,33 @@ import { Navbar } from '../../../component/Navbar';
 import feedClasses from './Feed.module.scss';
 import { useNavigate, Link } from 'react-router-dom';
 
+// UserResponse DTO (matching backend response)
+interface UserResponse {
+    id: string;
+    username: string;
+    email: string;
+    name: string | null;
+    surname: string | null;
+    role: string;
+}
+
+interface JobResponse {
+    jobId: number;
+    title: string;
+    description: string;
+    companyName: string;
+    location: string;
+    user: UserResponse;
+    postedAt: string;
+}
+
+interface ApplicationResponse {
+    applicationId: number;
+    user: UserResponse;
+    coverLetter: string;
+    appliedAt: string;
+}
+
 export function Jobs() {
     const [form, setForm] = useState({
         companyName: '',
@@ -20,11 +47,11 @@ export function Jobs() {
     const [applyLoading, setApplyLoading] = useState(false);
     const [applySuccess, setApplySuccess] = useState('');
     const [applyError, setApplyError] = useState('');
-    const [myJobs, setMyJobs] = useState([]);
-    const [unappliedJobs, setUnappliedJobs] = useState([]);
-    const [appliedJobs, setAppliedJobs] = useState([]);
+    const [myJobs, setMyJobs] = useState<JobResponse[]>([]);
+    const [unappliedJobs, setUnappliedJobs] = useState<JobResponse[]>([]);
+    const [appliedJobs, setAppliedJobs] = useState<JobResponse[]>([]);
     const [showApplicationsModal, setShowApplicationsModal] = useState(false);
-    const [applications, setApplications] = useState<any[]>([]);
+    const [applications, setApplications] = useState<ApplicationResponse[]>([]);
     const [applicationsLoading, setApplicationsLoading] = useState(false);
     const [applicationsError, setApplicationsError] = useState('');
     const [selectedApplicationsJobId, setSelectedApplicationsJobId] = useState<number | null>(null);
@@ -199,10 +226,10 @@ export function Jobs() {
         }
     };
 
-    const filterJobs = (jobs: any[], searchTerm: string) => {
+    const filterJobs = (jobs: JobResponse[], searchTerm: string): JobResponse[] => {
         if (!searchTerm) return jobs;
         const lowerSearch = searchTerm.toLowerCase();
-        return jobs.filter((job: any) =>
+        return jobs.filter((job) =>
             job.companyName.toLowerCase().includes(lowerSearch) ||
             job.title.toLowerCase().includes(lowerSearch) ||
             job.description.toLowerCase().includes(lowerSearch) ||
@@ -365,7 +392,7 @@ export function Jobs() {
                                         <div>No applications found for this job.</div>
                                     ) : (
                                         <ul style={{ listStyle: 'none', padding: 0 }}>
-                                            {applications.map((app: any) => (
+                                            {applications.map((app) => (
                                                 <li key={app.applicationId} style={{ background: '#f7fafd', borderRadius: 8, padding: 16, marginBottom: 16, boxShadow: '0 1px 4px rgba(33,147,176,0.05)' }}>
                                                     <Link
                                                         to={`/profile/${app.user.username}`}
@@ -415,7 +442,7 @@ export function Jobs() {
                                     <p>{appliedJobsSearch ? 'No matching jobs found.' : 'No applied jobs available.'}</p>
                                 ) : (
                                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                                        {filteredAppliedJobs.map((job: any) => (
+                                        {filteredAppliedJobs.map((job) => (
                                             <li key={job.jobId} style={{ background: 'white', borderRadius: 12, padding: 16, marginBottom: 16, boxShadow: '0 2px 8px rgba(33,147,176,0.07)' }}>
                                                 <h3 style={{ margin: 0, fontSize: 18 }}>{job.title}</h3>
                                                 <p style={{ margin: '8px 0', color: '#666' }}>{job.companyName}</p>
@@ -448,7 +475,7 @@ export function Jobs() {
                                     <p>{unappliedJobsSearch ? 'No matching jobs found.' : 'No unapplied jobs available.'}</p>
                                 ) : (
                                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                                        {filteredUnappliedJobs.map((job: any) => (
+                                        {filteredUnappliedJobs.map((job) => (
                                             <li key={job.jobId} style={{ background: 'white', borderRadius: 12, padding: 16, marginBottom: 16, boxShadow: '0 2px 8px rgba(33,147,176,0.07)' }}>
                                                 <h3 style={{ margin: 0, fontSize: 18 }}>{job.title}</h3>
                                                 <p style={{ margin: '8px 0', color: '#666' }}>{job.companyName}</p>
@@ -508,7 +535,7 @@ export function Jobs() {
                                     <p>{myJobsSearch ? 'No matching jobs found.' : 'No jobs posted yet.'}</p>
                                 ) : (
                                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                                        {filteredMyJobs.map((job: any) => (
+                                        {filteredMyJobs.map((job) => (
                                             <li key={job.jobId} style={{ background: 'white', borderRadius: 12, padding: 16, marginBottom: 16, boxShadow: '0 2px 8px rgba(33,147,176,0.07)', position: 'relative' }}>
                                                 <button
                                                     onClick={async () => {

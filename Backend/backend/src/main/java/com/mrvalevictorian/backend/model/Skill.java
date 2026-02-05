@@ -13,7 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-public class Skills {
+public class Skill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

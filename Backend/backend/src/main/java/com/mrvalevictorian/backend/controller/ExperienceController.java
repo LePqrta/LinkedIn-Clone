@@ -1,6 +1,8 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.ExperienceRequest;
+import com.mrvalevictorian.backend.dto.response.ExperienceResponse;
+import com.mrvalevictorian.backend.mapper.EntityMapper;
 import com.mrvalevictorian.backend.model.Experience;
 import com.mrvalevictorian.backend.service.ExperienceService;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class ExperienceController {
 
     private final ExperienceService experienceService;
+    private final EntityMapper mapper;
 
     @PostMapping("/create-experience")
     public ResponseEntity<Map<String, String>> createExperience(@RequestBody @Valid ExperienceRequest experienceRequest) {
@@ -36,8 +39,12 @@ public class ExperienceController {
     }
 
     @GetMapping("/profile/{profileId}")
-    public ResponseEntity<List<Experience>> getExperiencesByProfile(@PathVariable Long profileId) {
-        List<Experience> experiences = experienceService.getExperiencesByProfile(profileId);
-        return ResponseEntity.ok(experiences);
+    public ResponseEntity<List<ExperienceResponse>> getExperiencesByProfile(@PathVariable Long profileId) {
+        return ResponseEntity.ok(
+                experienceService.getExperiencesByProfile(profileId)
+                        .stream()
+                        .map(mapper::toExperienceResponse)
+                        .toList()
+        );
     }
 }

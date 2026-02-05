@@ -2,7 +2,7 @@ package com.mrvalevictorian.backend.service;
 
 import com.mrvalevictorian.backend.dto.SkillRequest;
 import com.mrvalevictorian.backend.model.Profile;
-import com.mrvalevictorian.backend.model.Skills;
+import com.mrvalevictorian.backend.model.Skill;
 import com.mrvalevictorian.backend.repo.ProfileRepo;
 import com.mrvalevictorian.backend.repo.SkillRepo;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class SkillService {
                 .orElseThrow(() -> new RuntimeException("Profile not found with ID: " + skillRequest.profileId()));
 
 
-        var newSkill = Skills.builder()
+        var newSkill = Skill.builder()
                 .skillName(skillRequest.skillName())
                 .profile(profile)
                 .build();
@@ -32,7 +32,7 @@ public class SkillService {
     }
 
     public void deleteSkill(Long skillId) {
-        Skills skill = skillRepo.findById(skillId)
+        Skill skill = skillRepo.findById(skillId)
                 .orElseThrow(() -> new RuntimeException("Skill not found with ID: " + skillId));
 
         skillRepo.delete(skill);
@@ -41,7 +41,7 @@ public class SkillService {
 
 
 
-    public List<Skills> getSkillsByProfile(Long profileId) {
+    public List<Skill> getSkillsByProfile(Long profileId) {
         if (!profileRepo.existsById(profileId)) {
             throw new RuntimeException("Profile not found with ID: " + profileId);
         }

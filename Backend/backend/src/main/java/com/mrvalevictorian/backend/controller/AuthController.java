@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -46,11 +45,4 @@ public class AuthController {
             return "Invalid or expired token.";
         }
     }
-    @GetMapping("/test")
-    public User returnUser() {
-        String username = jwtService.extractUser(jwtService.getToken());
-        // find the user by username, if exists, set the user, if not, throw an exception
-        return userRepo.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-}
 }

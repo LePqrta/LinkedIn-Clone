@@ -1,6 +1,8 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.EducationRequest;
+import com.mrvalevictorian.backend.dto.response.EducationResponse;
+import com.mrvalevictorian.backend.mapper.EntityMapper;
 import com.mrvalevictorian.backend.model.Education;
 import com.mrvalevictorian.backend.service.EducationService;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class EducationController {
 
     private final EducationService educationService;
+    private final EntityMapper mapper;
 
     @PostMapping("/create-education")
     public ResponseEntity<Map<String, String>> createEducation(@RequestBody @Valid EducationRequest educationRequest) {
@@ -36,8 +39,11 @@ public class EducationController {
     }
 
     @GetMapping("/profile/{profileId}")
-    public ResponseEntity<List<Education>> getEducationByProfile(@PathVariable Long profileId) {
-        List<Education> educationList = educationService.getEducationByProfile(profileId);
-        return ResponseEntity.ok(educationList);
+    public ResponseEntity<List<EducationResponse>> getEducationByProfile(@PathVariable Long profileId) {
+        return ResponseEntity.ok(
+                educationService.getEducationByProfile(profileId).stream()
+                        .map(mapper::toEducationResponse)
+                        .toList()
+        );
     }
 }
