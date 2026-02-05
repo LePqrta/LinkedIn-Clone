@@ -1,7 +1,8 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.ConnectionRequest;
-import com.mrvalevictorian.backend.model.Connection;
+import com.mrvalevictorian.backend.dto.response.ConnectionResponse;
+import com.mrvalevictorian.backend.mapper.EntityMapper;
 import com.mrvalevictorian.backend.service.ConnectionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ConnectionController {
     private final ConnectionService connectionService;
+    private final EntityMapper mapper;
 
     @PostMapping("/send-connection")
     public ResponseEntity<Map<String, String>> sendConnectionRequest(@RequestBody @Valid ConnectionRequest connectionRequest) {
@@ -38,19 +40,19 @@ public class ConnectionController {
     }
 
     @GetMapping("/get-connections")
-    public ResponseEntity<List<Connection>> getAcceptedConnections() {
-        List<Connection> connections = connectionService.getAcceptedConnectionsByUser();
-        return ResponseEntity.ok(connections);
+    public ResponseEntity<List<ConnectionResponse>> getAcceptedConnections() {
+        return ResponseEntity.ok(connectionService.getAcceptedConnectionsByUser()
+                .stream().map(mapper::toConnectionResponse).toList());
     }
     @GetMapping("/pending-connections")
-    public ResponseEntity<List<Connection>> getPendingConnections() {
-        List<Connection> connections = connectionService.getPendingConnectionsForNotification();
-        return ResponseEntity.ok(connections);
+    public ResponseEntity<List<ConnectionResponse>> getPendingConnections() {
+        return ResponseEntity.ok(connectionService.getPendingConnectionsForNotification()
+                .stream().map(mapper::toConnectionResponse).toList());
     }
     @GetMapping("/pending-connections-sender")
-    public ResponseEntity<List<Connection>> getPendingConnectionsForSender() {
-        List<Connection> connections = connectionService.getPendingConnectionsForSender();
-        return ResponseEntity.ok(connections);
+    public ResponseEntity<List<ConnectionResponse>> getPendingConnectionsForSender() {
+        return ResponseEntity.ok(connectionService.getPendingConnectionsForSender()
+                .stream().map(mapper::toConnectionResponse).toList());
     }
     @DeleteMapping("/remove-connection/{connectionId}")
     public ResponseEntity<String> deleteConnection(@PathVariable int connectionId) {
@@ -58,13 +60,13 @@ public class ConnectionController {
         return ResponseEntity.ok("Connection deleted successfully");
     }
     @GetMapping("/get-my-all-connections")
-    public ResponseEntity<List<Connection>> getAllConnections() {
-        List<Connection> connections = connectionService.getAllConnections();
-        return ResponseEntity.ok(connections);
+    public ResponseEntity<List<ConnectionResponse>> getAllConnections() {
+        return  ResponseEntity.ok(connectionService.getAllConnections()
+                .stream().map(mapper::toConnectionResponse).toList());
     }
     @GetMapping("/get-connections-of-user/{username}")
-    public ResponseEntity<List<Connection>> getConnectionsOfUser(@PathVariable String username) {
-        List<Connection> connections = connectionService.getConnectionsByUsername(username);
-        return ResponseEntity.ok(connections);
+    public ResponseEntity<List<ConnectionResponse>> getConnectionsOfUser(@PathVariable String username) {
+        return ResponseEntity.ok(connectionService.getConnectionsByUsername(username)
+                .stream().map(mapper::toConnectionResponse).toList());
     }
 }

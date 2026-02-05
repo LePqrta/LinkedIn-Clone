@@ -46,11 +46,4 @@ public class AuthController {
             return "Invalid or expired token.";
         }
     }
-    @GetMapping("/test")
-    public User returnUser() {
-        String username = jwtService.extractUser(jwtService.getToken());
-        // find the user by username, if exists, set the user, if not, throw an exception
-        return userRepo.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-}
 }

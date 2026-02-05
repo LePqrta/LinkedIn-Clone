@@ -1,6 +1,8 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.PostingRequest;
+import com.mrvalevictorian.backend.dto.response.PostResponse;
+import com.mrvalevictorian.backend.mapper.EntityMapper;
 import com.mrvalevictorian.backend.model.Post;
 import com.mrvalevictorian.backend.service.PostService;
 import jakarta.validation.Valid;
@@ -17,6 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final EntityMapper mapper;
     @PostMapping("/create-post")
     public ResponseEntity<String> createPost(@RequestBody @Valid PostingRequest postRequest) {
         postService.createPost(postRequest);
@@ -34,26 +37,23 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body("Post updated successfully");
     }
     @GetMapping("/get-profile-posts/{profileId}")
-    public List<Post> getPostsByProfileId(@PathVariable Long profileId) {
-        return postService.getPostsByProfileId(profileId);
+    public List<PostResponse> getPostsByProfileId(@PathVariable Long profileId) {
+        return postService.getPostsByProfileId(profileId).stream().map(mapper::toPostResponse).toList();
     }
     @GetMapping("/get-posts-of-connections")
-    public ResponseEntity<List<Post>> getPostsOfConnections() {
-        List<Post> posts = postService.getPostsOfConnections();
-        return ResponseEntity.ok(posts);
-    }
-
-    // to test if the controller is working
-    @GetMapping("/test")
-    public Post getPostById() {
-        return postService.getPostById(1L);
+    public ResponseEntity<List<PostResponse>> getPostsOfConnections() {
+        return ResponseEntity.ok(
+                postService.getPostsOfConnections()
+                        .stream()
+                        .map(mapper::toPostResponse)
+                        .toList()
+        );
     }
 
     @GetMapping
-    public List<Post> getAllPostsOfUser() {
-        return postService.getAllPosts();
+    public List<PostResponse> getAllPostsOfUser() {
+        return postService.getAllPosts().stream().map(mapper::toPostResponse).toList();
     }
 
-    // Admin post delete
 
 }

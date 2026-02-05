@@ -1,6 +1,8 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.CommentRequest;
+import com.mrvalevictorian.backend.dto.response.CommentResponse;
+import com.mrvalevictorian.backend.mapper.EntityMapper;
 import com.mrvalevictorian.backend.model.Comment;
 import com.mrvalevictorian.backend.service.CommentService;
 import jakarta.validation.Valid;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
+    private final EntityMapper mapper;
 
     // Add methods to handle comment-related requests here
     // For example, createComment, getComments, deleteComment, etc.
@@ -40,10 +43,9 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}/comments")
-    public ResponseEntity<List<Comment>> getCommentsByPost(@PathVariable Long postId) {
-        List<Comment> comments = commentService.getCommentsByPost(postId);
-        return ResponseEntity.ok(comments);
+    public ResponseEntity<List<CommentResponse>> getCommentsByPost(@PathVariable Long postId) {
+        return ResponseEntity.ok(commentService.getCommentsByPost(postId)
+                .stream().map(mapper::toCommentResponse).toList());
     }
-    //admin comment delete
 
 }

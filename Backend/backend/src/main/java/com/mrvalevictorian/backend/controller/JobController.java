@@ -1,12 +1,15 @@
 package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.JobCreateRequest;
+import com.mrvalevictorian.backend.dto.response.JobResponse;
+import com.mrvalevictorian.backend.mapper.EntityMapper;
 import com.mrvalevictorian.backend.model.Job;
 import com.mrvalevictorian.backend.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
 import java.util.List;
 
@@ -15,6 +18,8 @@ import java.util.List;
 @RequestMapping("/jobs")
 public class JobController {
     private final JobService jobService;
+    private final EntityMapper mapper;
+    private final ResourceUrlProvider resourceUrlProvider;
 
     @PostMapping("/create-job")
     public ResponseEntity<String> createJob(@RequestBody @Valid JobCreateRequest jobCreateRequest) {
@@ -22,31 +27,25 @@ public class JobController {
         return ResponseEntity.ok("Job created successfully");
     }
 
-
     @DeleteMapping("/delete-job/{jobId}")
     public ResponseEntity<String> deleteJob(@PathVariable int jobId) {
         jobService.deleteJob(jobId);
         return ResponseEntity.ok("Job deleted successfully");
     }
     @GetMapping("/get-jobs")
-    public ResponseEntity<List<Job>> getAllJobs() {
-        List<Job> jobs = jobService.getAllJobs();
-        return ResponseEntity.ok(jobs);
+    public ResponseEntity<List<JobResponse>> getAllJobs() {
+        return ResponseEntity.ok(jobService.getAllJobs().stream().map(mapper::toJobResponse).toList());
     }
     @GetMapping("/get-jobs-not-applied")
-    public ResponseEntity<List<Job>> getJobsNotApplied() {
-        List<Job> jobs = jobService.getAllJobsNotApplied();
-        return ResponseEntity.ok(jobs);
+    public ResponseEntity<List<JobResponse>> getJobsNotApplied() {
+        return ResponseEntity.ok(jobService.getAllJobsNotApplied().stream().map(mapper::toJobResponse).toList());
     }
     @GetMapping("/get-jobs-applied")
-    public  ResponseEntity<List<Job>> getJobsApplied() {
-        List<Job> jobs = jobService.getAllJobsApplied();
-        return ResponseEntity.ok(jobs);
+    public  ResponseEntity<List<JobResponse>> getJobsApplied() {
+        return ResponseEntity.ok(jobService.getAllJobsApplied().stream().map(mapper::toJobResponse).toList());
     }
     @GetMapping("/get-jobs-created")
-    public ResponseEntity<List<Job>> getJobsCreated() {
-        List<Job> jobs = jobService.getByUserId();
-        return ResponseEntity.ok(jobs);
+    public ResponseEntity<List<JobResponse>> getJobsCreated() {
+        return ResponseEntity.ok(jobService.getByUserId().stream().map(mapper::toJobResponse).toList());
     }
-    //admin job delete
 }
