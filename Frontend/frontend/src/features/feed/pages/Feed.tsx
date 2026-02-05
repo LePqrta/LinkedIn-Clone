@@ -5,16 +5,40 @@ import postClasses from '../../profile/pages/Profile.module.scss';
 import { Navbar } from '../../../component/Navbar';
 import { Link } from 'react-router-dom';
 
+// UserResponse DTO (matching backend response)
+interface UserResponse {
+    id: string;
+    username: string;
+    email: string;
+    name: string | null;
+    surname: string | null;
+    role: string;
+}
+
+interface PostResponse {
+    postId: number;
+    user: UserResponse | null;
+    content: string;
+    createdAt: string;
+}
+
+interface CommentResponse {
+    commentId: number;
+    user: UserResponse | null;
+    content: string;
+    createdAt: string;
+}
+
 export function Feed() {
     const auth = useAuthentication();
     const [newPost, setNewPost] = useState("");
-    const [posts, setPosts] = useState<any[]>([]);
+    const [posts, setPosts] = useState<PostResponse[]>([]);
     const [postsLoading, setPostsLoading] = useState(false);
     const [postsError, setPostsError] = useState<string | null>(null);
     const [likeLoading, setLikeLoading] = useState<{[postId: number]: boolean}>({});
     const [likeCounts, setLikeCounts] = useState<{[postId: number]: number}>({});
     const [commentInputs, setCommentInputs] = useState<{[postId: number]: string}>({});
-    const [comments, setComments] = useState<{[postId: number]: any[]}>({});
+    const [comments, setComments] = useState<{[postId: number]: CommentResponse[]}>({});
     const [deleteLoading, setDeleteLoading] = useState<{[id: number]: boolean}>({});
 
     useEffect(() => {
@@ -31,7 +55,7 @@ export function Feed() {
                 });
                 if (!response.ok) throw new Error('Failed to fetch posts');
                 const data = await response.json();
-                data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                data.sort((a: PostResponse, b: PostResponse) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setPosts(data);
                 for (const post of data) {
                     fetchLikeCount(post.postId);
@@ -185,7 +209,7 @@ export function Feed() {
                 });
                 if (refreshed.ok) {
                     const data = await refreshed.json();
-                    data.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                    data.sort((a: PostResponse, b: PostResponse) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                     setPosts(data);
                     for (const post of data) {
                         fetchLikeCount(post.postId);
@@ -240,7 +264,7 @@ export function Feed() {
                             ) : (
                                 posts.map(post => (
                                     <div key={post.postId} className={postClasses.postItem}>
-                                        {auth?.user?.username && post.user.username === auth.user.username && (
+                                        {auth?.user?.username && post.user?.username === auth.user.username && (
                                             <button
                                                 className={postClasses.postDeleteButton}
                                                 onClick={() => handleDeletePost(post.postId)}
@@ -252,11 +276,11 @@ export function Feed() {
                                         )}
                                         <div className={postClasses.postHeader}>
                                             <Link
-                                                to={`/profile/${post.user.username}`}
+                                                to={post.user?.username ? `/profile/${post.user.username}` : '#'}
                                                 style={{ color: '#0a66c2', fontWeight: 600, textDecoration: 'underline', cursor: 'pointer' }}
                                                 title="View profile"
                                             >
-                                                {post.user.name || post.user.username}
+                                                {post.user?.name || post.user?.username || 'Unknown User'}
                                             </Link>
                                             <span className={postClasses.postDate}>{new Date(post.createdAt).toLocaleString()}</span>
                                         </div>

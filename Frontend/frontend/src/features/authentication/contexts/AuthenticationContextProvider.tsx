@@ -1,4 +1,4 @@
-import { createContext, use, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { Loader } from "../../../component/loader/Loader";
 
@@ -40,10 +40,6 @@ export function AuthenticationContextProvider(){
         location.pathname === "/login" ||
         location.pathname === "/signup";
 
-    const isPublicPage = 
-        isOnAuthPage ||
-        location.pathname.startsWith("/profile/");
-
     const login = async (username: string, password: string) => {
         const response = await fetch(import.meta.env.VITE_API_URL+"/auth/login", {
             method: "POST",
@@ -53,8 +49,12 @@ export function AuthenticationContextProvider(){
             body: JSON.stringify({ username, password }),
         });
         if (response.ok){
-            const {token} = await response.json();
+            const data = await response.json();
+            const { token, id, email, username: uname, role } = data;
             localStorage.setItem("token", token);
+            const userData: User = { id, email, username: uname, role };
+            localStorage.setItem("user", JSON.stringify(userData));
+            setUser(userData);
         } else {
             const errorData = await response.json();
             throw new Error(errorData.error || "Failed to login");
@@ -86,23 +86,21 @@ export function AuthenticationContextProvider(){
 
     const logout = async() => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setUser(null);
     }
 
-    const fetchUser = async () => {
+    const loadUser = () => {
         try {
-            const response = await fetch(import.meta.env.VITE_API_URL+"/auth/test", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error("Authentication failed");
+            const token = localStorage.getItem("token");
+            const storedUser = localStorage.getItem("user");
+            
+            if (token && storedUser) {
+                setUser(JSON.parse(storedUser));
             }
-                const user = await response.json();
-                setUser(user);
         } catch(e){
             console.log(e);
+            localStorage.removeItem("user");
         } finally {
             setIsLoading(false);
         }
@@ -110,10 +108,11 @@ export function AuthenticationContextProvider(){
 
     useEffect(()=>{
         if (user){
+            setIsLoading(false);
             return;
         }
-        fetchUser();
-    }, [user, location]);
+        loadUser();
+    }, []);
     
     if(isLoading){
         return <Loader/>;

@@ -10,69 +10,66 @@ import { Input } from "../../authentication/components/input/Input";
 import { useAuthentication } from "../../authentication/contexts/AuthenticationContextProvider";
 import { Navbar } from '../../../component/Navbar';
 
-interface User {
-    id: string;
+// 1. Define the User Response DTO (Shared across many components)
+interface UserResponse {
+    id: string; // UUID string from backend
     username: string;
     email: string;
-    password: string;
-    createdAt: string;
-    updatedAt: string;
-    role: string;
     name: string | null;
     surname: string | null;
-    accountNonExpired: boolean;
-    accountNonLocked: boolean;
-    credentialsNonExpired: boolean;
-    enabled: boolean;
-    authorities: Array<{ authority: string }>;
+    role: string;
+    // Removed sensitive fields: password, authorities, accountNonExpired, etc.
 }
 
-interface Profile {
-    profileId: number;
-    user: User;
+// 2. Define Profile Response
+interface ProfileResponse {
+    id: number;
+    user: UserResponse; // Nested DTO
     location: string | null;
     summary: string | null;
 }
 
-interface Skill {
-    id: number;
-    skillName: string;
-    profile: Profile;
-}
-
-interface Education {
+// 3. Define Education Response
+interface EducationResponse {
     educationId: number;
-    profile: Profile;
     institutionName: string;
     degree: string;
     fieldOfStudy: string;
     startDate: string;
-    endDate: string;
+    endDate: string | null;
 }
 
-interface Experience {
+// 4. Define Experience Response
+interface ExperienceResponse {
     experienceId: number;
-    profile: Profile;
     companyName: string;
     jobTitle: string | null;
     startDate: string;
-    endDate: string;
+    endDate: string | null;
     description: string | null;
 }
 
-interface Connection {
-    connectionId: number;
-    sender: User;
-    receiver: User;
-    status: 'ACCEPTED';
-    createdAt: string;
+// 5. Define Skill Response
+interface SkillResponse {
+    id: number;        // Check if backend uses 'id' or 'skillId'
+    skillName: string;
+    // Profile is usually not included in the SkillResponse list to avoid infinite loops
 }
 
+// 6. Main State Container
 interface ProfileData {
-    profile: Profile;
-    skills: Skill[];
-    education: Education[];
-    experience: Experience[];
+    profile: ProfileResponse;
+    skills: SkillResponse[];
+    education: EducationResponse[];
+    experience: ExperienceResponse[];
+}
+
+// ... Keep your existing FormData interfaces (EducationFormData, ExperienceFormData) ...
+interface ExperienceFormData {
+    companyName: string;
+    description: string;
+    startDate: string;
+    endDate: string;
 }
 
 interface EducationFormData {
@@ -82,12 +79,12 @@ interface EducationFormData {
     startDate: string;
     endDate: string;
 }
-
-interface ExperienceFormData {
-    companyName: string;
-    description: string;
-    startDate: string;
-    endDate: string;
+interface Connection {
+    connectionId: number;
+    sender: UserResponse;
+    receiver: UserResponse;
+    status: 'ACCEPTED';
+    createdAt: string;
 }
 
 export function Profile() {
@@ -170,27 +167,27 @@ export function Profile() {
             console.log("Profile data received:", profileData);
 
             // Ensure the data structure matches our interface
-            if (!profileData || !profileData.user || typeof profileData.profileId !== 'number') {
+            if (!profileData || !profileData.user || typeof profileData.id !== 'number') {
                 throw new Error("Invalid profile data received from server");
             }
 
             // Fetch additional data in parallel
             const [skillsResponse, educationResponse, experienceResponse] = await Promise.all([
-                fetch(`${import.meta.env.VITE_API_URL}/skills/profile/${profileData.profileId}`, {
+                fetch(`${import.meta.env.VITE_API_URL}/skills/profile/${profileData.id}`, {
                     headers: {
                         "Authorization": `Bearer ${localStorage.getItem("token")}`,
                         "Accept": "application/json"
                     },
                     credentials: "include"
                 }),
-                fetch(`${import.meta.env.VITE_API_URL}/education/profile/${profileData.profileId}`, {
+                fetch(`${import.meta.env.VITE_API_URL}/education/profile/${profileData.id}`, {
                     headers: {
                         "Authorization": `Bearer ${localStorage.getItem("token")}`,
                         "Accept": "application/json"
                     },
                     credentials: "include"
                 }),
-                fetch(`${import.meta.env.VITE_API_URL}/experiences/profile/${profileData.profileId}`, {
+                fetch(`${import.meta.env.VITE_API_URL}/experiences/profile/${profileData.id}`, {
                     headers: {
                         "Authorization": `Bearer ${localStorage.getItem("token")}`,
                         "Accept": "application/json"
@@ -288,11 +285,11 @@ export function Profile() {
 
     useEffect(() => {
         const fetchPosts = async () => {
-            if (!profileData?.profile.profileId) return;
+            if (!profileData?.profile.id) return;
             setPostsLoading(true);
             setPostsError(null);
             try {
-                const response = await fetch(`http://localhost:8080/post/get-profile-posts/${profileData.profile.profileId}`, {
+                const response = await fetch(`http://localhost:8080/post/get-profile-posts/${profileData.profile.id}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Accept': 'application/json',
@@ -317,7 +314,7 @@ export function Profile() {
         };
         fetchPosts();
         // eslint-disable-next-line
-    }, [profileData?.profile.profileId]);
+    }, [profileData?.profile.id]);
 
     const fetchLikeCount = async (postId: number) => {
         try {
@@ -353,7 +350,7 @@ export function Profile() {
         e.preventDefault();
         setSkillError(null);
 
-        if (!profileData?.profile.profileId) {
+        if (!profileData?.profile.id) {
             setSkillError("Profile ID not found");
             return;
         }
@@ -373,7 +370,7 @@ export function Profile() {
         try {
             console.log("Adding skill:", {
                 skillName: newSkill.trim(),
-                profileId: profileData.profile.profileId
+                profileId: profileData.profile.id
             });
 
             const response = await fetch(`${import.meta.env.VITE_API_URL}/skills/create-skill`, {
@@ -385,7 +382,7 @@ export function Profile() {
                 },
                 body: JSON.stringify({
                     skillName: newSkill.trim(),
-                    profileId: profileData.profile.profileId
+                    profileId: profileData.profile.id
                 }),
                 mode: "cors",
                 credentials: "include"
@@ -434,7 +431,7 @@ export function Profile() {
         e.preventDefault();
         setEducationError(null);
 
-        if (!profileData?.profile.profileId) {
+        if (!profileData?.profile.id) {
             setEducationError("Profile ID not found");
             return;
         }
@@ -464,7 +461,7 @@ export function Profile() {
         try {
             console.log("Adding education:", {
                 ...educationForm,
-                profileId: profileData.profile.profileId
+                profileId: profileData.profile.id
             });
 
             const response = await fetch(`${import.meta.env.VITE_API_URL}/education/create-education`, {
@@ -476,7 +473,7 @@ export function Profile() {
                 },
                 body: JSON.stringify({
                     ...educationForm,
-                    profileId: profileData.profile.profileId
+                    profileId: profileData.profile.id
                 }),
                 mode: "cors",
                 credentials: "include"
@@ -531,7 +528,7 @@ export function Profile() {
         e.preventDefault();
         setExperienceError(null);
 
-        if (!profileData?.profile.profileId) {
+        if (!profileData?.profile.id) {
             setExperienceError("Profile ID not found");
             return;
         }
@@ -551,7 +548,7 @@ export function Profile() {
         try {
             console.log("Adding experience:", {
                 ...experienceForm,
-                profileId: profileData.profile.profileId
+                profileId: profileData.profile.id
             });
 
             const response = await fetch(`${import.meta.env.VITE_API_URL}/experiences/create-experience`, {
@@ -563,7 +560,7 @@ export function Profile() {
                 },
                 body: JSON.stringify({
                     ...experienceForm,
-                    profileId: profileData.profile.profileId
+                    profileId: profileData.profile.id
                 }),
                 mode: "cors",
                 credentials: "include"

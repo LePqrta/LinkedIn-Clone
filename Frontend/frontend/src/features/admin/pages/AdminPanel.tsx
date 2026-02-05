@@ -10,39 +10,30 @@ import { Navbar } from '../../../component/Navbar';
 
 type TabType = 'users' | 'posts' | 'jobs' | 'new-admin';
 
-interface User {
+// UserResponse DTO (matching backend response)
+interface UserResponse {
     id: string;
     username: string;
     email: string;
-    name: string;
-    surname: string;
+    name: string | null;
+    surname: string | null;
+    role: string;
 }
 
-interface Post {
+interface PostResponse {
     postId: number;
-    user: {
-        id: string;
-        username: string;
-        email: string;
-        name: string | null;
-        surname: string | null;
-        role: string;
-    };
+    user: UserResponse;
     content: string;
     createdAt: string;
 }
 
-interface Job {
+interface JobResponse {
     jobId: number;
     title: string;
     description: string;
     companyName: string;
     location: string;
-    user: {
-        id: string;
-        username: string;
-        // ... other user fields
-    };
+    user: UserResponse;
     postedAt: string;
 }
 
@@ -54,9 +45,9 @@ interface NewAdminData {
 
 export function AdminPanel() {
     const [activeTab, setActiveTab] = useState<TabType>('users');
-    const [users, setUsers] = useState<User[]>([]);
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [jobs, setJobs] = useState<Job[]>([]);
+    const [users, setUsers] = useState<UserResponse[]>([]);
+    const [posts, setPosts] = useState<PostResponse[]>([]);
+    const [jobs, setJobs] = useState<JobResponse[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
