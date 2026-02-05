@@ -2,8 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.PostingRequest;
 import com.mrvalevictorian.backend.dto.response.PostResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
-import com.mrvalevictorian.backend.model.Post;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
     @PostMapping("/create-post")
     public ResponseEntity<String> createPost(@RequestBody @Valid PostingRequest postRequest) {
         postService.createPost(postRequest);

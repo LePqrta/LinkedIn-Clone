@@ -4,10 +4,8 @@ package com.mrvalevictorian.backend.controller;
 import com.mrvalevictorian.backend.dto.LocationEditRequest;
 import com.mrvalevictorian.backend.dto.SummaryEditRequest;
 import com.mrvalevictorian.backend.dto.response.ProfileResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
-import com.mrvalevictorian.backend.model.Profile;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.service.ProfileService;
-import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/profile")
 public class ProfileController {
     private final ProfileService profileService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
 
     @GetMapping("/my-profile")
     public ResponseEntity<ProfileResponse> getMyProfile() {

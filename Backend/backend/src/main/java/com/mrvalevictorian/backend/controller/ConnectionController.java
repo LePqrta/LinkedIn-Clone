@@ -2,7 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.ConnectionRequest;
 import com.mrvalevictorian.backend.dto.response.ConnectionResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.service.ConnectionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ConnectionController {
     private final ConnectionService connectionService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
 
     @PostMapping("/send-connection")
     public ResponseEntity<Map<String, String>> sendConnectionRequest(@RequestBody @Valid ConnectionRequest connectionRequest) {

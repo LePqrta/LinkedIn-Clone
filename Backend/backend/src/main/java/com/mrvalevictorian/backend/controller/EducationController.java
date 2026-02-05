@@ -2,8 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.EducationRequest;
 import com.mrvalevictorian.backend.dto.response.EducationResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
-import com.mrvalevictorian.backend.model.Education;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.service.EducationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class EducationController {
 
     private final EducationService educationService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
 
     @PostMapping("/create-education")
     public ResponseEntity<Map<String, String>> createEducation(@RequestBody @Valid EducationRequest educationRequest) {

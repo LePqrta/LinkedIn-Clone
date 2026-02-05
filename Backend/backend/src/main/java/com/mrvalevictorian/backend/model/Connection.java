@@ -33,6 +33,7 @@ public class Connection {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private StatusEnum status = StatusEnum.PENDING;
 
     @Column(name = "created_at", nullable = false)

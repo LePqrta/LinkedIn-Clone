@@ -53,12 +53,16 @@ public class User implements UserDetails {
 
 
     @Transient
+    @Builder.Default
     private boolean accountNonExpired = true;
     @Transient
+    @Builder.Default
     private boolean accountNonLocked = true;
     @Transient
+    @Builder.Default
     private boolean credentialsNonExpired = true;
     @Column(name = "is_enabled")
+    @Builder.Default
     private boolean isEnabled = true;
 
 

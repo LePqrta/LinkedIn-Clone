@@ -2,8 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.CommentRequest;
 import com.mrvalevictorian.backend.dto.response.CommentResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
-import com.mrvalevictorian.backend.model.Comment;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
 
     // Add methods to handle comment-related requests here
     // For example, createComment, getComments, deleteComment, etc.

@@ -2,8 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.JobCreateRequest;
 import com.mrvalevictorian.backend.dto.response.JobResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
-import com.mrvalevictorian.backend.model.Job;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import java.util.List;
 @RequestMapping("/jobs")
 public class JobController {
     private final JobService jobService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
     private final ResourceUrlProvider resourceUrlProvider;
 
     @PostMapping("/create-job")

@@ -2,8 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.ExperienceRequest;
 import com.mrvalevictorian.backend.dto.response.ExperienceResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
-import com.mrvalevictorian.backend.model.Experience;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.service.ExperienceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class ExperienceController {
 
     private final ExperienceService experienceService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
 
     @PostMapping("/create-experience")
     public ResponseEntity<Map<String, String>> createExperience(@RequestBody @Valid ExperienceRequest experienceRequest) {

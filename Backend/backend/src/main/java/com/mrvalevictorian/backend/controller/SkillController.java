@@ -2,9 +2,8 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.SkillRequest;
 import com.mrvalevictorian.backend.dto.response.SkillResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.service.SkillService;
-import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class SkillController {
 
     private final SkillService skillService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
 
 
     @PostMapping("/create-skill")

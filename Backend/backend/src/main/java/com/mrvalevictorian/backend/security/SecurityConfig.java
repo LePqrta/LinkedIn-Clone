@@ -44,7 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/user").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/post/**").hasAnyRole("USER","ADMIN")
-                        // ... your other matchers ...
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/connections/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/like/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/comment/**").hasAnyRole("USER","ADMIN")

@@ -2,7 +2,7 @@ package com.mrvalevictorian.backend.controller;
 
 import com.mrvalevictorian.backend.dto.CreateUserRequest;
 import com.mrvalevictorian.backend.dto.response.JobResponse;
-import com.mrvalevictorian.backend.mapper.EntityMapper;
+import com.mrvalevictorian.backend.mapper.AppMapper;
 import com.mrvalevictorian.backend.model.Post;
 import com.mrvalevictorian.backend.model.User;
 import com.mrvalevictorian.backend.service.AdminService;
@@ -26,7 +26,7 @@ public class AdminController {
     private final UserService userService;
     private final PostService postService;
     private final JobService jobService;
-    private final EntityMapper mapper;
+    private final AppMapper mapper;
 
     @PostMapping("/add-new-admin")
     @PreAuthorize("hasRole('ADMIN')")
