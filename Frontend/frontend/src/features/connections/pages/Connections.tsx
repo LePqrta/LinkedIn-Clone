@@ -33,7 +33,6 @@ export function Connections() {
     const [searchTerm, setSearchTerm] = useState('');
 
     const currentUsername = localStorage.getItem('username');
-    console.log('Current username:', currentUsername); // Debug log
 
     // Filter functions
     const filteredUsers = users.filter(user => {
@@ -62,7 +61,6 @@ export function Connections() {
     const fetchPendingConnections = async () => {
         try {
             const token = localStorage.getItem("token");
-            console.log('Fetching pending connections with token:', token ? 'Token exists' : 'No token'); // Debug log
 
             const response = await fetch(`${import.meta.env.VITE_API_URL}/connections/pending-connections-sender`, {
                 headers: {
@@ -72,7 +70,6 @@ export function Connections() {
                 credentials: "include"
             });
 
-            console.log('Pending connections response status:', response.status); // Debug log
 
             if (!response.ok) {
                 const errorText = await response.text();
@@ -81,7 +78,6 @@ export function Connections() {
             }
 
             const data = await response.json();
-            // (Removed extra debug log so that raw data is printed only in the debug box.)
 
             // Do not filter pending connections; use the raw data returned by the endpoint.
             setPendingConnections(data);
@@ -106,7 +102,6 @@ export function Connections() {
             }
 
             const data = await response.json();
-            console.log('Users without connections:', data);
             
             // Filter out current user and users with pending connections
             const filteredUsers = data.filter((user: UserResponse) => 
@@ -166,7 +161,6 @@ export function Connections() {
             }
 
             const data = await response.json();
-            console.log('Connection response:', data);
 
             if (data.message === "Connection sent successfully") {
                 // Remove user from available users immediately
@@ -196,18 +190,6 @@ export function Connections() {
             return null;
         }
 
-        const isPending = pendingConnections.some(conn => 
-            conn.sender?.username === user.username || 
-            conn.receiver?.username === user.username
-        );
-        
-        const pendingConnection = pendingConnections.find(conn => 
-            conn.sender?.username === user.username || 
-            conn.receiver?.username === user.username
-        );
-        
-        const isSentByMe = pendingConnection?.sender?.username === currentUsername;
-
         return (
             <div key={user.id} className={classes.userCard}>
                 <div className={classes.userInfo}>
@@ -223,37 +205,16 @@ export function Connections() {
                         <p className={classes.email}>{user.email}</p>
                     </div>
                 </div>
-                {isPending ? (
-                    <button
-                        className={classes.connectButton}
-                        onClick={() => handleSendConnection(user.username)}
-                        disabled={sendingRequests.has(user.username)}
-                    >
-                        {sendingRequests.has(user.username) ? "Sending..." : "Connect"}
-                    </button>
-                ) : (
-                    <button
-                        className={classes.connectButton}
-                        onClick={() => handleSendConnection(user.username)}
-                        disabled={sendingRequests.has(user.username)}
-                    >
-                        {sendingRequests.has(user.username) ? "Sending..." : "Connect"}
-                    </button>
-                )}
+                <button
+                    className={classes.connectButton}
+                    onClick={() => handleSendConnection(user.username)}
+                    disabled={sendingRequests.has(user.username)}
+                >
+                    {sendingRequests.has(user.username) ? "Sending..." : "Connect"}
+                </button>
             </div>
         );
     };
-
-    // Separate sent and received connections
-    const sentConnections = pendingConnections.filter(conn => conn.sender.username === currentUsername);
-    const receivedConnections = pendingConnections.filter(conn => conn.receiver.username === currentUsername);
-
-    console.log('Current state:', { // Debug log
-        pendingConnections,
-        sentConnections,
-        receivedConnections,
-        currentUsername
-    });
 
     if (isLoading) {
         return (
@@ -336,7 +297,7 @@ export function Connections() {
                                             onClick={async () => {
                                                 try {
                                                     const token = localStorage.getItem("token");
-                                                    const response = await fetch(`http://localhost:8080/connections/remove-connection/${connection.connectionId}`, {
+                                                    const response = await fetch(`${import.meta.env.VITE_API_URL}/connections/remove-connection/${connection.connectionId}`, {
                                                         method: 'DELETE',
                                                         headers: {
                                                             "Authorization": `Bearer ${token}`,
