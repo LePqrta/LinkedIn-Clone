@@ -36,7 +36,7 @@ export function Notifications() {
             setError(null);
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('http://localhost:8080/connections/pending-connections', {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/connections/pending-connections`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json',
@@ -61,8 +61,8 @@ export function Notifications() {
             const token = localStorage.getItem('token');
             const url =
                 action === 'accept'
-                    ? `http://localhost:8080/connections/accept-connection?connectionId=${connectionId}`
-                    : `http://localhost:8080/connections/reject-connection?connectionId=${connectionId}`;
+                    ? `${import.meta.env.VITE_API_URL}/connections/accept-connection?connectionId=${connectionId}`
+                    : `${import.meta.env.VITE_API_URL}/connections/reject-connection?connectionId=${connectionId}`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {

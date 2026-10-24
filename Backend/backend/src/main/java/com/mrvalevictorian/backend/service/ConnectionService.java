@@ -9,6 +9,7 @@ import com.mrvalevictorian.backend.repo.ConnectionRepo;
 import com.mrvalevictorian.backend.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,19 +20,18 @@ import java.util.List;
 public class ConnectionService {
     private final UserRepo userRepo;
     private final ConnectionRepo connectionRepo;
-    private final JwtService jwtService;
 
     public void sendConnectionRequest(String username) {
-        //aynı connection atılmaması için kontrol eklenecek
-        String senderUsername = jwtService.extractUser(jwtService.getToken());
+        String senderUsername = currentUsername();
         User sender = userRepo.findByUsername(senderUsername)
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
         User receiver = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Receiver not found"));
-        if (sender.getId() == receiver.getId()) {
+        if (sender.getId().equals(receiver.getId())) {
             throw new ConnectionException("You cannot send a connection request to yourself");
         }
-        if (connectionRepo.existsBySenderAndReceiver(sender, receiver)) {
+        if (connectionRepo.existsBySenderAndReceiver(sender, receiver)
+                || connectionRepo.existsBySenderAndReceiver(receiver, sender)) {
             throw new ConnectionException("Connection request already sent");
         }
 
@@ -46,7 +46,7 @@ public class ConnectionService {
     public void acceptConnectionRequest(int connectionId) {
         Connection connection = connectionRepo.findById(connectionId)
                 .orElseThrow(() -> new RuntimeException("Connection not found"));
-        if(!jwtService.extractUser(jwtService.getToken()).equals(connection.getReceiver().getUsername())){
+        if(!currentUsername().equals(connection.getReceiver().getUsername())){
             throw new UserNotFoundException("Authentication failed");
         }
         if(connection.getStatus().equals(StatusEnum.ACCEPTED)){
@@ -61,7 +61,7 @@ public class ConnectionService {
     public void rejectConnectionRequest(int connectionId) {
         Connection connection = connectionRepo.findById(connectionId)
                 .orElseThrow(() -> new RuntimeException("Connection not found"));
-        if(!jwtService.extractUser(jwtService.getToken()).equals(connection.getReceiver().getUsername())){
+        if(!currentUsername().equals(connection.getReceiver().getUsername())){
             throw new UserNotFoundException("Authentication failed");
         }
         if(connection.getStatus().equals(StatusEnum.REJECTED)){
@@ -74,13 +74,12 @@ public class ConnectionService {
         connectionRepo.save(connection);
     }
 
-    // test edilecek
     public void removeConnection(int connectionId) {
         Connection connection = connectionRepo.findById(connectionId)
                 .orElseThrow(() -> new RuntimeException("Connection not found"));
-        if(!jwtService.extractUser(jwtService.getToken()).equals(connection.getSender().getUsername())
+        if(!currentUsername().equals(connection.getSender().getUsername())
                 &&
-                !jwtService.extractUser(jwtService.getToken()).equals(connection.getReceiver().getUsername())){
+                !currentUsername().equals(connection.getReceiver().getUsername())){
             throw new UserNotFoundException("Authentication failed");
         }
         if(connection.getStatus().equals(StatusEnum.REMOVED)){
@@ -89,25 +88,25 @@ public class ConnectionService {
         connectionRepo.delete(connection);
     }
     public List<Connection> getAllConnections() {
-        String username = jwtService.extractUser(jwtService.getToken());
+        String username = currentUsername();
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
         return connectionRepo.findAllConnections(user.getId());
     }
     public List<Connection> getAcceptedConnectionsByUser() {
-        String username = jwtService.extractUser(jwtService.getToken());
+        String username = currentUsername();
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
         return connectionRepo.findAcceptedConnections(user.getId());
     }
     public List<Connection> getPendingConnectionsForNotification() {
-        String username = jwtService.extractUser(jwtService.getToken());
+        String username = currentUsername();
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
         return connectionRepo.findPendingConnectionsForNotification(user.getUsername());
     }
     public List<Connection> getPendingConnectionsForSender() {
-        String username = jwtService.extractUser(jwtService.getToken());
+        String username = currentUsername();
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Authentication failed"));
         return connectionRepo.findPendingConnectionsForSender(user.getUsername());
@@ -118,5 +117,13 @@ public class ConnectionService {
     }
     public List<Connection> getConnectionsByUsername(String username) {
         return connectionRepo.findConnectionsByUsername(username);
+    }
+    private String currentUsername() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication.getName() == null || authentication.getName().isBlank()) {
+            throw new UserNotFoundException("Authentication failed");
+        }
+        return authentication.getName();
     }
 }
